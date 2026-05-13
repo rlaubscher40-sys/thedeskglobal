@@ -89,6 +89,8 @@ export const dailyFeedItems = mysqlTable("daily_feed_items", {
   partnerTag: text("partnerTag"),
   /** One-liner conversation starter for partner meetings */
   sayThis: text("sayThis"),
+  /** AI-generated hero image URL for this feed item (stored in S3) */
+  imageUrl: text("imageUrl"),
   /** Whether this item was promoted to the weekly deep dive */
   promotedToEdition: boolean("promotedToEdition").default(false),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

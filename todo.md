@@ -40,3 +40,13 @@
 - [x] 60 vitest tests passing across 5 test files
 - [x] Responsive design (mobile + desktop sidebar)
 - [x] Checkpoint saved
+
+## Image Generation
+- [ ] Add imageUrl column to dailyFeedItems schema and migrate DB
+- [ ] Add coverImageUrl column to editions schema and migrate DB
+- [ ] Generate hero image per feed item at ingest time (background, stored in S3)
+- [ ] Generate cover image per weekly edition at ingest time (stored in S3)
+- [ ] Display thumbnail in feed card UI
+- [ ] Display full hero image in feed item detail modal
+- [ ] Add homepage hero banner image (static editorial)
+- [ ] Display edition cover image in weekly edition reader

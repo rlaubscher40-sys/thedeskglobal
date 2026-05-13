@@ -215,6 +215,11 @@ export async function updateDailyFeedItemSayThis(id: number, sayThis: string) {
   if (!db) return;
   await db.update(dailyFeedItems).set({ sayThis }).where(eq(dailyFeedItems.id, id));
 }
+export async function updateDailyFeedItemImageUrl(id: number, imageUrl: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(dailyFeedItems).set({ imageUrl }).where(eq(dailyFeedItems.id, id));
+}
 
 export async function getDailyFeedItemById(id: number) {
   const db = await getDb();

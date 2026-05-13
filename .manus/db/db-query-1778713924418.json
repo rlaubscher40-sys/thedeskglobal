@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE daily_feed_items ADD COLUMN imageUrl TEXT NULL AFTER sayThis;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute ALTER TABLE daily_feed_items ADD COLUMN imageUrl TEXT NULL AFTER sayThis;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1978
+}

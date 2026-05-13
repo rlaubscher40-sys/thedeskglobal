@@ -263,6 +263,31 @@ export default function StoryPage() {
           {/* Top amber rule */}
           <div style={{ height: "2px", background: "linear-gradient(90deg, rgba(245,166,35,0.7) 0%, rgba(245,166,35,0.15) 50%, transparent 100%)" }} />
 
+          {/* Hero image */}
+          {(item as any).imageUrl && (
+            <div className="relative w-full" style={{ maxHeight: "300px", overflow: "hidden" }}>
+              <img
+                src={(item as any).imageUrl}
+                alt={item.title}
+                className="w-full object-cover"
+                style={{ maxHeight: "300px", display: "block" }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(to bottom, rgba(6,8,15,0.0) 50%, rgba(6,8,15,0.9) 100%)",
+                }}
+              />
+              <span
+                className="absolute bottom-3 right-3 font-mono text-[9px] tracking-widest uppercase px-2 py-1 rounded-sm"
+                style={{ background: "rgba(6,8,15,0.75)", color: "rgba(245,166,35,0.7)", border: "1px solid rgba(245,166,35,0.2)" }}
+              >
+                AI Generated
+              </span>
+            </div>
+          )}
+
           <div className="p-7 sm:p-9">
             {/* Meta row */}
             <div className="flex items-center gap-3 mb-5 flex-wrap">

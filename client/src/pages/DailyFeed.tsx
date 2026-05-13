@@ -220,6 +220,34 @@ function FeedCard({
         aria-expanded={expanded}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpanded((p) => !p); } }}
       >
+        {/* Hero image strip — full width when expanded, hidden when collapsed on compact */}
+        {item.imageUrl && expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden rounded-xl mb-4"
+            style={{ marginLeft: "-1px", marginRight: "-1px" }}
+          >
+            <div className="relative w-full" style={{ paddingBottom: "42%" }}>
+              <img
+                src={item.imageUrl}
+                alt={item.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ borderRadius: "10px" }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(to bottom, transparent 40%, rgba(8,10,20,0.85) 100%)",
+                  borderRadius: "10px",
+                }}
+              />
+            </div>
+          </motion.div>
+        )}
+
         {/* Top row: category + bookmark */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
@@ -364,24 +392,49 @@ function FeedCard({
             )}
           </div>
 
-          {/* Bookmark button */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onBookmark(item.id); }}
-            disabled={isPending && !isSaved}
-            aria-label={isSaved ? "Saved to Reading Queue" : "Save to Reading Queue"}
-            title={isSaved ? "Saved to Reading Queue" : "Save to Reading Queue"}
-            className={`p-2 shrink-0 rounded-lg transition-all duration-200 mt-1 ${
-              isSaved
-                ? "text-amber-400 bg-amber-500/10"
-                : "text-muted-foreground/70 hover:text-amber-400 hover:bg-amber-500/10"
-            }`}
-          >
-            {isSaved ? (
-              <BookmarkCheck className="w-5 h-5" />
-            ) : (
-              <Bookmark className="w-5 h-5" />
+          {/* Right side: thumbnail (collapsed) + bookmark */}
+          <div className="flex flex-col items-end gap-2 shrink-0">
+            {/* Thumbnail - only shown when NOT expanded and image exists */}
+            {item.imageUrl && !expanded && (
+              <div
+                className="relative overflow-hidden rounded-lg"
+                style={{
+                  width: size === "medium" ? "88px" : "72px",
+                  height: size === "medium" ? "60px" : "50px",
+                  flexShrink: 0,
+                }}
+              >
+                <img
+                  src={item.imageUrl}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(135deg, rgba(8,10,20,0.3) 0%, transparent 60%)" }}
+                />
+              </div>
             )}
-          </button>
+            {/* Bookmark button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onBookmark(item.id); }}
+              disabled={isPending && !isSaved}
+              aria-label={isSaved ? "Saved to Reading Queue" : "Save to Reading Queue"}
+              title={isSaved ? "Saved to Reading Queue" : "Save to Reading Queue"}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                isSaved
+                  ? "text-amber-400 bg-amber-500/10"
+                  : "text-muted-foreground/70 hover:text-amber-400 hover:bg-amber-500/10"
+              }`}
+            >
+              {isSaved ? (
+                <BookmarkCheck className="w-5 h-5" />
+              ) : (
+                <Bookmark className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Footer: source favicon + link */}

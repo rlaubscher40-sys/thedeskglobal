@@ -693,6 +693,24 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
             </div>
           </div>
 
+          {/* ── Hero Image (when available) ── */}
+          {edition.heroImageUrl && (
+            <div className="relative w-full" style={{ maxHeight: "420px", overflow: "hidden" }}>
+              <img
+                src={edition.heroImageUrl}
+                alt={`Edition ${edition.editionNumber} cover`}
+                className="w-full object-cover"
+                style={{ maxHeight: "420px", display: "block" }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(to bottom, rgba(6,8,15,0.15) 0%, rgba(6,8,15,0.0) 40%, rgba(6,8,15,0.85) 100%)",
+                }}
+              />
+            </div>
+          )}
+
           {/* ── Ruben's Take ── */}
           <div
             style={{

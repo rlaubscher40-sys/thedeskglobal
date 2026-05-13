@@ -415,6 +415,7 @@ export function registerScheduledRoutes(app: Express) {
             let enriched = 0;
             let enrichFailed = 0;
             let sayThisEnriched = 0;
+            let imagesGenerated = 0;
             for (const item of validItems) {
               const id = titleToId.get(item.title);
               if (!id) continue;
@@ -436,8 +437,30 @@ export function registerScheduledRoutes(app: Express) {
                   sayThisEnriched++;
                 }
               }
+
+              // Generate hero image for this feed item
+              try {
+                const categoryStyle: Record<string, string> = {
+                  PROPERTY: "architectural photography, Australian suburban street, golden hour light",
+                  MACRO: "abstract financial data visualization, dark blue and gold tones",
+                  AI: "glowing neural network, deep space blue, futuristic technology",
+                  MARKETS: "stock market trading floor, dramatic lighting, financial charts",
+                  POLICY: "Australian parliament building, formal government architecture",
+                  SCIENCE: "clean laboratory, scientific research, bright clinical lighting",
+                  TECH: "sleek technology product, minimalist dark background, neon accents",
+                };
+                const style = categoryStyle[item.category?.toUpperCase()] || "editorial photography, dark moody tones";
+                const imagePrompt = `Editorial news thumbnail for: "${item.title}". Style: ${style}. Cinematic composition, no text, no people's faces, premium editorial quality, 16:9 aspect ratio.`;
+                const { url: imageUrl } = await generateImage({ prompt: imagePrompt });
+                if (imageUrl) {
+                  await db.updateDailyFeedItemImageUrl(id, imageUrl);
+                  imagesGenerated++;
+                }
+              } catch (imgErr) {
+                console.warn(`[Ingest] Image generation failed for item ${id}:`, imgErr);
+              }
             }
-            console.log(`[Ingest] Enriched ${enriched} partnerTags (${enrichFailed} failed), ${sayThisEnriched} sayThis lines for ${feedDate}`);
+            console.log(`[Ingest] Enriched ${enriched} partnerTags (${enrichFailed} failed), ${sayThisEnriched} sayThis lines, ${imagesGenerated} images for ${feedDate}`);
           } catch (enrichErr) {
             console.error("[Ingest] Background partnerTag enrichment error:", enrichErr);
           }
