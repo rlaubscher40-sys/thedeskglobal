@@ -727,7 +727,7 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
                 Edition {latestEdition.editionNumber}
               </p>
               <p className="text-[11px] text-muted-foreground/70 mb-2.5">
-                Week of {latestEdition.weekOf}
+                Week of {latestEdition.weekOf?.replace(/^week of /i, '')}
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {(latestEdition.topics as any[])?.slice(0, 3).map((t: any, i: number) => {

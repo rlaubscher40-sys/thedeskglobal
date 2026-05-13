@@ -370,7 +370,7 @@ export default function SearchPage() {
                         </span>
                       </div>
                       <h4 style={{ fontSize: "14px", fontWeight: 600, color: "rgba(245,238,220,0.88)", marginBottom: "8px" }}>
-                        Week of {edition.weekOf}
+                        Week of {edition.weekOf?.replace(/^week of /i, '')}
                       </h4>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                         {(edition.topics as any[])?.map((t: any, j: number) => {

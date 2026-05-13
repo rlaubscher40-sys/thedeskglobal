@@ -433,7 +433,7 @@ export default function Editions() {
                 className="font-serif font-bold tracking-tight mb-1"
                 style={{ fontSize: "clamp(22px, 3vw, 32px)", color: "rgba(245,238,220,0.95)", lineHeight: 1.2 }}
               >
-                Week of {selected.weekOf}
+                Week of {selected.weekOf?.replace(/^week of /i, '')}
               </h2>
               <p className="mb-5" style={{ fontSize: "13px", color: "rgba(245,238,220,0.45)" }}>
                 {selected.weekRange} coverage period
