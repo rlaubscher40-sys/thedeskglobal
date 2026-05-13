@@ -1,5 +1,4 @@
-import { cn } from "@/lib/utils";
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { AlertTriangle, RotateCcw, Home } from "lucide-react";
 import { Component, ReactNode } from "react";
 
 interface Props {
@@ -24,32 +23,203 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex items-center justify-center min-h-screen p-8 bg-background">
-          <div className="flex flex-col items-center w-full max-w-2xl p-8">
-            <AlertTriangle
-              size={48}
-              className="text-destructive mb-6 flex-shrink-0"
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            padding: "40px 24px",
+            background: "oklch(0.09 0.018 260)",
+          }}
+        >
+          {/* Ambient glow */}
+          <div
+            style={{
+              position: "fixed",
+              top: "30%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "600px",
+              height: "400px",
+              background: "radial-gradient(ellipse, rgba(245,166,35,0.04) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              maxWidth: "480px",
+              width: "100%",
+              textAlign: "center",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            {/* Amber rule at top */}
+            <div
+              style={{
+                width: "60px",
+                height: "2px",
+                background: "linear-gradient(90deg, rgba(245,166,35,0.8), rgba(245,166,35,0.2))",
+                boxShadow: "0 0 12px rgba(245,166,35,0.3)",
+                marginBottom: "32px",
+                borderRadius: "1px",
+              }}
             />
 
-            <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
-
-            <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
-              <pre className="text-sm text-muted-foreground whitespace-break-spaces">
-                {this.state.error?.stack}
-              </pre>
+            {/* Icon */}
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "14px",
+                background: "rgba(245,166,35,0.08)",
+                border: "1px solid rgba(245,166,35,0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "24px",
+                boxShadow: "0 0 24px rgba(245,166,35,0.1)",
+              }}
+            >
+              <AlertTriangle
+                style={{ width: "24px", height: "24px", color: "rgba(245,166,35,0.85)" }}
+              />
             </div>
 
-            <button
-              onClick={() => window.location.reload()}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-primary text-primary-foreground",
-                "hover:opacity-90 cursor-pointer"
-              )}
+            {/* Eyebrow */}
+            <span
+              className="font-mono uppercase tracking-[0.22em]"
+              style={{
+                fontSize: "8px",
+                fontWeight: 700,
+                color: "rgba(245,166,35,0.6)",
+                marginBottom: "12px",
+                display: "block",
+              }}
             >
-              <RotateCcw size={16} />
-              Reload Page
-            </button>
+              Signal Interrupted
+            </span>
+
+            {/* Heading */}
+            <h1
+              className="font-serif font-bold"
+              style={{
+                fontSize: "clamp(22px, 4vw, 28px)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.2,
+                color: "rgba(245,238,220,0.95)",
+                marginBottom: "12px",
+              }}
+            >
+              Something went wrong.
+            </h1>
+
+            {/* Body */}
+            <p
+              style={{
+                fontSize: "13px",
+                color: "rgba(245,238,220,0.4)",
+                lineHeight: 1.7,
+                marginBottom: "32px",
+                maxWidth: "360px",
+              }}
+            >
+              An unexpected error occurred in The Desk. Reloading the page usually resolves this.
+              If the problem persists, the issue has been logged.
+            </p>
+
+            {/* Error code (non-technical, no stack trace) */}
+            {this.state.error?.message && (
+              <div
+                style={{
+                  padding: "10px 16px",
+                  background: "oklch(0.135 0.018 260 / 0.8)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "8px",
+                  marginBottom: "28px",
+                  width: "100%",
+                }}
+              >
+                <p
+                  className="font-mono"
+                  style={{
+                    fontSize: "11px",
+                    color: "rgba(245,238,220,0.3)",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {this.state.error.message.length > 120
+                    ? this.state.error.message.slice(0, 120) + "..."
+                    : this.state.error.message}
+                </p>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 20px",
+                  background: "rgba(245,166,35,0.12)",
+                  border: "1px solid rgba(245,166,35,0.3)",
+                  borderRadius: "8px",
+                  color: "rgba(245,166,35,0.9)",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "background 0.15s, border-color 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(245,166,35,0.18)";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,166,35,0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(245,166,35,0.12)";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,166,35,0.3)";
+                }}
+              >
+                <RotateCcw style={{ width: "14px", height: "14px" }} />
+                Reload Page
+              </button>
+
+              <button
+                onClick={() => { window.location.href = "/"; }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 20px",
+                  background: "oklch(0.135 0.018 260 / 0.9)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "8px",
+                  color: "rgba(245,238,220,0.55)",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  transition: "background 0.15s, border-color 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.16 0.018 260 / 0.9)";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,238,220,0.14)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.135 0.018 260 / 0.9)";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,238,220,0.08)";
+                }}
+              >
+                <Home style={{ width: "14px", height: "14px" }} />
+                Go to Today
+              </button>
+            </div>
           </div>
         </div>
       );

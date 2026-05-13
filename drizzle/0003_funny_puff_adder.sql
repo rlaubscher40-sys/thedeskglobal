@@ -1,0 +1,1 @@
+ALTER TABLE `daily_feed_items` MODIFY COLUMN `partnerTag` text;
