@@ -357,8 +357,12 @@ export function registerScheduledRoutes(app: Express) {
           sourceUrl: item.sourceUrl || null,
           summary: sanitizeText(item.summary) || item.summary,
           category: item.category.toUpperCase(),
-          partnerTag: sanitizeText(item.partnerTag) || null,
-          sayThis: sanitizeText(item.sayThis) || null,
+          partnerTag: item.partnerTag
+            ? (sanitizeText(typeof item.partnerTag === 'object' ? JSON.stringify(item.partnerTag) : item.partnerTag) || null)
+            : null,
+          sayThis: item.sayThis
+            ? (sanitizeText(typeof item.sayThis === 'string' ? item.sayThis : String(item.sayThis)) || null)
+            : null,
           promotedToEdition: false,
         });
         results.push({ index: i, success: true });
@@ -508,7 +512,9 @@ export function registerScheduledRoutes(app: Express) {
           keyTakeaway: t.keyTakeaway ? (sanitizeText(t.keyTakeaway) || t.keyTakeaway) : undefined,
           whatToWatch: Array.isArray(t.whatToWatch) ? t.whatToWatch : undefined,
           talkingPoints: t.talkingPoints && typeof t.talkingPoints === 'object' ? t.talkingPoints : undefined,
-          partnerTag: t.partnerTag ? (sanitizeText(t.partnerTag) || t.partnerTag) : undefined,
+          partnerTag: t.partnerTag
+            ? (sanitizeText(typeof t.partnerTag === 'object' ? JSON.stringify(t.partnerTag) : t.partnerTag) || null)
+            : undefined,
         })),
         signals: body.signals.map((s: string) => sanitizeText(s) || s),
         fullText: sanitizeText(body.fullText) || null,
