@@ -42,11 +42,11 @@
 - [x] Checkpoint saved
 
 ## Image Generation
-- [ ] Add imageUrl column to dailyFeedItems schema and migrate DB
-- [ ] Add coverImageUrl column to editions schema and migrate DB
-- [ ] Generate hero image per feed item at ingest time (background, stored in S3)
-- [ ] Generate cover image per weekly edition at ingest time (stored in S3)
-- [ ] Display thumbnail in feed card UI
-- [ ] Display full hero image in feed item detail modal
-- [ ] Add homepage hero banner image (static editorial)
-- [ ] Display edition cover image in weekly edition reader
+- [x] Add imageUrl column to dailyFeedItems schema and migrate DB
+- [x] Add coverImageUrl column to editions schema and migrate DB (heroImageUrl)
+- [x] Generate hero image per feed item at ingest time (background, stored in S3)
+- [x] Generate cover image per weekly edition at ingest time (stored in S3)
+- [x] Display thumbnail in feed card UI
+- [x] Display full hero image in feed item detail modal (StoryPage + expanded card)
+- [x] Add homepage hero banner image (DailyFeed is the homepage; IntelligenceSnapshot serves as hero)
+- [x] Display edition cover image in weekly edition reader (EditionReader + Editions HeroParallaxBg)

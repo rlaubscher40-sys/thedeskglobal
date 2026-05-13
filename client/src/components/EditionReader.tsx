@@ -723,7 +723,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
               {/* Header row */}
               <div className="flex items-center gap-4 mb-5">
                 <img
-                  src="/manus-storage/ruben_headshot_a071a9dd.jpeg"
+                  src="/manus-storage/ruben-headshot_4c885a17.jpeg"
                   alt="Ruben Laubscher"
                   className="w-10 h-10 rounded-full object-cover object-top flex-none"
                   style={{ border: "2px solid rgba(245,166,35,0.4)" }}
@@ -1123,7 +1123,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
             >
               <div className="max-w-2xl mx-auto flex items-center gap-4 flex-wrap">
                 <img
-                  src="/manus-storage/ruben_headshot_a071a9dd.jpeg"
+                  src="/manus-storage/ruben-headshot_4c885a17.jpeg"
                   alt="Ruben Laubscher"
                   className="w-8 h-8 rounded-full object-cover object-top flex-none"
                   style={{ border: "1.5px solid rgba(245,166,35,0.4)" }}

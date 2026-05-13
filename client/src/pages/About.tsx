@@ -282,6 +282,42 @@ export default function About() {
       {/* Amber rule */}
       <div style={{ height: "1px", background: "linear-gradient(90deg, rgba(245,166,35,0.3) 0%, rgba(245,166,35,0.06) 40%, transparent 80%)", marginBottom: "28px" }} />
 
+      {/* Author bio */}
+      <section style={{ marginBottom: "32px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+            padding: "24px 28px",
+            background: "oklch(0.135 0.018 260 / 0.9)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderLeft: "3px solid rgba(245,166,35,0.5)",
+            borderRadius: "12px",
+            boxShadow: "0 2px 24px rgba(0,0,0,0.45)",
+          }}
+        >
+          <img
+            src="/manus-storage/ruben-headshot_4c885a17.jpeg"
+            alt="Ruben Laubscher"
+            style={{
+              width: "72px",
+              height: "72px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              border: "2px solid rgba(245,166,35,0.3)",
+              flexShrink: 0,
+            }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p className="font-mono uppercase tracking-[0.15em]" style={{ fontSize: "8px", fontWeight: 700, color: "rgba(245,166,35,0.6)", marginBottom: "6px" }}>Built by</p>
+            <p style={{ fontSize: "15px", fontWeight: 700, color: "rgba(245,238,220,0.95)", lineHeight: 1.2, marginBottom: "6px" }}>Ruben Laubscher</p>
+            <p style={{ fontSize: "12px", color: "rgba(245,238,220,0.45)", lineHeight: 1.6 }}>Head of Partnerships, InvestorKit. Building Australia's most systematic property partnership engine from Sydney.</p>
+          </div>
+        </div>
+      </section>
+
       {/* Connect CTA section */}
       <section style={{ marginBottom: "36px" }}>
         <p className="font-mono uppercase tracking-[0.18em] mb-4" style={{ fontSize: "8px", fontWeight: 700, color: "rgba(245,166,35,0.5)" }}>
