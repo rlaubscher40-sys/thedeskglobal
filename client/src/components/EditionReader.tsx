@@ -40,7 +40,7 @@ import {
   Mail,
 } from "lucide-react";
 import type { Edition, EditionTopic } from "../../../drizzle/schema";
-import { getTrendColour, getMetricTooltip } from "@/lib/normaliseKeyMetrics";
+import { getTrendColour, getMetricTooltip, asStringArray } from "@/lib/normaliseKeyMetrics";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -192,11 +192,11 @@ function LeadStory({ topic, editionNumber, bookmarked, onBookmark, onLinkedInPos
           )}
         </div>
 
-        {topic.partnerRelevance && topic.partnerRelevance.length > 0 && (
+        {asStringArray(topic.partnerRelevance).length > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
             <Users className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(96,165,250,0.7)" }} />
             <p className="text-xs" style={{ color: "rgba(96,165,250,0.7)" }}>
-              {topic.partnerRelevance.join(" · ")}
+              {asStringArray(topic.partnerRelevance).join(" · ")}
             </p>
           </div>
         )}
@@ -297,11 +297,11 @@ function TopicCard({ topic, editionNumber, bookmarked, onBookmark, onLinkedInPos
           {topic.summary}
         </p>
 
-        {topic.partnerRelevance && topic.partnerRelevance.length > 0 && (
+        {asStringArray(topic.partnerRelevance).length > 0 && (
           <div className="flex items-center gap-1.5 flex-wrap mt-4">
             <Users className="w-3 h-3 shrink-0" style={{ color: "rgba(96,165,250,0.65)" }} />
             <p className="text-[11px]" style={{ color: "rgba(96,165,250,0.65)" }}>
-              {topic.partnerRelevance.join(" · ")}
+              {asStringArray(topic.partnerRelevance).join(" · ")}
             </p>
           </div>
         )}

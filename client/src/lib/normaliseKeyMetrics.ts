@@ -1,4 +1,16 @@
 /**
+ * Safely coerce any value to a string[]. Handles:
+ * - Already an array  -> returned as-is (filtered to non-empty strings)
+ * - A non-empty string -> wrapped in a single-element array
+ * - null / undefined  -> empty array
+ */
+export function asStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) return (value as unknown[]).filter((v) => typeof v === "string" && (v as string).trim().length > 0) as string[];
+  if (typeof value === "string" && value.trim().length > 0) return [value.trim()];
+  return [];
+}
+
+/**
  * Normalise keyMetrics from any stored format into a flat Record<string, string>.
  *
  * The field has been stored in two different shapes over time:

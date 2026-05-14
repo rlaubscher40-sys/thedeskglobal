@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { normaliseKeyMetrics, getTrendColour, getMetricTooltip } from "@/lib/normaliseKeyMetrics";
+import { normaliseKeyMetrics, getTrendColour, getMetricTooltip, asStringArray } from "@/lib/normaliseKeyMetrics";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
@@ -691,11 +691,11 @@ export default function Editions() {
                   <p className="text-sm text-muted-foreground leading-relaxed mb-3" style={{ lineHeight: 1.75 }}>
                     {topic.summary}
                   </p>
-                  {topic.partnerRelevance && topic.partnerRelevance.length > 0 && (
+                  {asStringArray(topic.partnerRelevance).length > 0 && (
                     <div className="flex items-center gap-1.5 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                       <Users className="w-3 h-3 text-sky-400 shrink-0" />
                       <p className="text-[11px] text-sky-400 leading-relaxed">
-                        {topic.partnerRelevance.join(" \u00b7 ")}
+                        {asStringArray(topic.partnerRelevance).join(" \u00b7 ")}
                       </p>
                     </div>
                   )}
