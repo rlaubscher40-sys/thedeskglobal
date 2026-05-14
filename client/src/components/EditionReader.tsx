@@ -1128,6 +1128,13 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
               if (!grouped[catKey]) grouped[catKey] = { meta, items: [] };
               grouped[catKey].items.push({ signal, idx: i });
             });
+            // Build flat list of signals with their meta for the grid
+            const flatSignals = signals.map((signal, idx) => {
+              const rawKey = detectSignalCategoryR(signal);
+              const catKey = rawKey === "TECH" ? "AI" : rawKey;
+              const meta = CAT_META_R[catKey] || { label: catKey, accentColor: "rgba(255,255,255,0.2)", dotColor: "#ffffff", headerColor: "rgba(255,255,255,0.6)" };
+              return { signal, idx, catKey, meta };
+            });
             return (
               <div
                 className="w-full"
@@ -1141,62 +1148,57 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                     <p className="font-mono text-[9px] tracking-[0.35em] uppercase" style={{ color: "rgba(245,166,35,0.7)" }}>
                       Key Signals
                     </p>
+                    <span className="font-mono text-[9px]" style={{ color: "rgba(245,238,220,0.2)" }}>
+                      {flatSignals.length}
+                    </span>
                   </div>
                   <div className="h-px flex-1" style={{ background: "rgba(245,238,220,0.07)" }} />
                 </div>
-                {/* Category groups */}
-                <div className="space-y-8">
-                  {Object.entries(grouped).map(([catKey, group]) => (
-                    <div key={catKey}>
-                      {/* Category header row */}
-                      <div className="flex items-center gap-3 mb-4">
-                        <div
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ background: group.meta.dotColor, boxShadow: `0 0 8px ${group.meta.dotColor}60` }}
-                        />
-                        <span
-                          className="font-mono text-[11px] tracking-[0.2em] uppercase font-semibold"
-                          style={{ color: group.meta.headerColor }}
-                        >
-                          {group.meta.label}
-                        </span>
-                        <div className="h-px flex-1" style={{ background: `${group.meta.accentColor}30` }} />
-                        <span className="font-mono text-[9px]" style={{ color: "rgba(245,238,220,0.25)" }}>
-                          {group.items.length} signal{group.items.length !== 1 ? "s" : ""}
-                        </span>
-                      </div>
-                      {/* Signals grid under this category */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                        {group.items.map(({ signal, idx }) => {
-                          const isSaved = bookmarked.has(signal);
-                          return (
+                {/* Flat masonry grid — category badge on each card */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {flatSignals.map(({ signal, idx, meta }) => {
+                    const isSaved = bookmarked.has(signal);
+                    return (
+                      <div
+                        key={idx}
+                        className="flex flex-col gap-2.5 p-4 rounded-xl"
+                        style={{
+                          background: "rgba(255,255,255,0.022)",
+                          border: "1px solid rgba(255,255,255,0.05)",
+                          borderLeft: `3px solid ${meta.accentColor}`,
+                        }}
+                      >
+                        {/* Category badge */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
                             <div
-                              key={idx}
-                              className="flex items-start gap-3 p-4 rounded-xl"
-                              style={{
-                                background: "rgba(255,255,255,0.022)",
-                                border: "1px solid rgba(255,255,255,0.05)",
-                                borderLeft: `3px solid ${group.meta.accentColor}`,
-                              }}
+                              className="w-1.5 h-1.5 rounded-full shrink-0"
+                              style={{ background: meta.dotColor }}
+                            />
+                            <span
+                              className="font-mono text-[9px] tracking-[0.18em] uppercase font-semibold"
+                              style={{ color: meta.headerColor }}
                             >
-                              <p className="text-sm flex-1" style={{ color: "rgba(245,238,220,0.72)", lineHeight: 1.65 }}>
-                                {signal}
-                              </p>
-                              <button
-                                onClick={() => onBookmark(signal, `Signal from Edition #${edition.editionNumber}`)}
-                                disabled={isSaved}
-                                title={isSaved ? "Saved" : "Save to Reading Queue"}
-                                className="p-1 rounded transition-colors shrink-0 mt-0.5"
-                                style={{ color: isSaved ? "rgba(245,166,35,0.9)" : "rgba(245,238,220,0.2)" }}
-                              >
-                                {isSaved ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
-                              </button>
-                            </div>
-                          );
-                        })}
+                              {meta.label}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => onBookmark(signal, `Signal from Edition #${edition.editionNumber}`)}
+                            disabled={isSaved}
+                            title={isSaved ? "Saved" : "Save to Reading Queue"}
+                            className="p-0.5 rounded transition-colors shrink-0"
+                            style={{ color: isSaved ? "rgba(245,166,35,0.9)" : "rgba(245,238,220,0.18)" }}
+                          >
+                            {isSaved ? <BookmarkCheck className="w-3 h-3" /> : <Bookmark className="w-3 h-3" />}
+                          </button>
+                        </div>
+                        {/* Signal text */}
+                        <p className="text-[13px] leading-relaxed" style={{ color: "rgba(245,238,220,0.72)" }}>
+                          {signal}
+                        </p>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );

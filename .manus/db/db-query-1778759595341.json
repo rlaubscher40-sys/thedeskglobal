@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, JSON_EXTRACT(topics, '$[*].category') as categories FROM editions ORDER BY id DESC LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute SELECT id, JSON_EXTRACT(topics, '$[*].category') as categories FROM editions ORDER BY id DESC LIMIT 3;",
+  "rows": [
+    {
+      "id": "90001",
+      "categories": "[\"PROPERTY\", \"GEOPOLITICS\", \"AI\", \"GLOBAL PUBLIC PULSE\"]"
+    },
+    {
+      "id": "60019",
+      "categories": "[\"MACRO\", \"MARKETS\", \"PROPERTY\"]"
+    },
+    {
+      "id": "60018",
+      "categories": "[\"MACRO\", \"MARKETS\", \"PROPERTY\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcategories\n90001\t[\"PROPERTY\", \"GEOPOLITICS\", \"AI\", \"GLOBAL PUBLIC PULSE\"]\n60019\t[\"MACRO\", \"MARKETS\", \"PROPERTY\"]\n60018\t[\"MACRO\", \"MARKETS\", \"PROPERTY\"]\n",
+  "stderr": "",
+  "execution_time_ms": 1726
+}

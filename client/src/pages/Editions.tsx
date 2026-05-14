@@ -29,12 +29,24 @@ import EditionReader from "@/components/EditionReader";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  MACRO: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  PROPERTY: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  TECH: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  POLICY: "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  SCIENCE: "bg-rose-500/15 text-rose-400 border-rose-500/30",
-  MARKETS: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+  MACRO:              "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  PROPERTY:           "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  TECH:               "bg-sky-500/15 text-sky-400 border-sky-500/30",
+  AI:                 "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  POLICY:             "bg-purple-500/15 text-purple-400 border-purple-500/30",
+  SCIENCE:            "bg-rose-500/15 text-rose-400 border-rose-500/30",
+  MARKETS:            "bg-orange-500/15 text-orange-400 border-orange-500/30",
+  GEOPOLITICS:        "bg-red-500/15 text-red-400 border-red-500/30",
+  ECONOMICS:          "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  CULTURE:            "bg-pink-500/15 text-pink-400 border-pink-500/30",
+  SPORT:              "bg-lime-500/15 text-lime-400 border-lime-500/30",
+  SPORTS:             "bg-lime-500/15 text-lime-400 border-lime-500/30",
+  "GLOBAL PUBLIC PULSE": "bg-violet-500/15 text-violet-400 border-violet-500/30",
+  GLOBALPUBLICPULSE:  "bg-violet-500/15 text-violet-400 border-violet-500/30",
+  CRYPTO:             "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+  HEALTH:             "bg-teal-500/15 text-teal-400 border-teal-500/30",
+  CLIMATE:            "bg-green-500/15 text-green-400 border-green-500/30",
+  OTHER:              "bg-slate-500/15 text-slate-400 border-slate-500/30",
 };
 function parseNumericVal(val: string | number | undefined): number | null {
   if (val === undefined || val === null) return null;
@@ -785,12 +797,12 @@ export default function Editions() {
                   </h3>
                   <p className="text-[11px] text-muted-foreground/50 mt-0.5">{signals.length} signals across {Object.keys(grouped).length} categories</p>
                 </div>
-                {/* Category groups */}
-                <div className="divide-y divide-white/[0.04]">
+                {/* Category groups — compact grid layout */}
+                <div className="p-5 space-y-5">
                   {Object.entries(grouped).map(([catKey, group]) => (
-                    <div key={catKey} className="px-5 py-4">
+                    <div key={catKey}>
                       {/* Category header */}
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-2.5">
                         <div className={`w-2 h-2 rounded-full ${group.meta.dotClass} shrink-0`} />
                         <span
                           className="font-mono text-[10px] tracking-[0.2em] uppercase font-semibold"
@@ -798,10 +810,11 @@ export default function Editions() {
                         >
                           {group.meta.label}
                         </span>
-                        <span className="font-mono text-[9px] text-muted-foreground/40 ml-auto">{group.items.length}</span>
+                        <div className="h-px flex-1" style={{ background: `${group.meta.borderColor}` }} />
+                        <span className="font-mono text-[9px] text-muted-foreground/40">{group.items.length}</span>
                       </div>
-                      {/* Signals under this category */}
-                      <div className="space-y-2">
+                      {/* Signals grid — 1 col mobile, 2 col tablet, 3 col desktop */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
                         {group.items.map(({ signal, idx }) => {
                           const isSaved = bookmarked.has(signal);
                           return (
