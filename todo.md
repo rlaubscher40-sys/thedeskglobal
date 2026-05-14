@@ -72,3 +72,14 @@
 - [x] Add Ruben author panel in AppLayout sidebar (headshot, title, IK stats, LinkedIn)
 - [x] Add About page with Ruben bio, IK proof points, and media-kit-style layout
 - [x] Add premium flag to users table for future monetisation gate
+
+## Bug Fixes (Session 2)
+- [x] Fix CATEGORY_COLORS/CATEGORY_ACCENT/CATEGORY_BAR_COLORS in DailyFeed.tsx — add GEOPOLITICS, CULTURE, SPORT, GLOBAL PUBLIC PULSE, CRYPTO, HEALTH, CLIMATE, OTHER
+- [x] Fix CAT map in EditionReader.tsx — add CULTURE, SPORT, GLOBAL PUBLIC PULSE, CRYPTO, HEALTH, CLIMATE, OTHER
+- [x] Fix CAT_META_R in EditionReader.tsx signals section — add CULTURE, SPORT, GLOBAL PUBLIC PULSE, CRYPTO, HEALTH, CLIMATE, OTHER
+- [x] Fix detectSignalCategoryR in EditionReader.tsx — add CRYPTO, SPORT, CULTURE, GLOBAL PUBLIC PULSE, HEALTH, CLIMATE, GEOPOLITICS, OTHER fallback
+- [x] Fix CAT_META in Editions.tsx signals section — add CULTURE, SPORT, GLOBAL PUBLIC PULSE, CRYPTO, HEALTH, CLIMATE, OTHER
+- [x] Fix detectSignalCategory in Editions.tsx — add CRYPTO, SPORT, CULTURE, GLOBAL PUBLIC PULSE, HEALTH, CLIMATE, GEOPOLITICS, OTHER fallback
+- [x] Fix Key Metrics rendering in Editions.tsx — long-text values (>40 chars) render as compact note card instead of large number
+- [x] Fix Key Metrics rendering in EditionReader.tsx — long-text values (>40 chars) render as compact note tile in horizontal scroll strip
+- [x] Add sanitiseKeyMetrics() server-side helper in scheduledRoutes.ts — strips metric values >60 chars before DB storage, logs warning

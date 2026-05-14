@@ -45,6 +45,16 @@ const CATEGORY_COLORS: Record<string, string> = {
   MARKETS: "bg-orange-500/10 text-orange-400 border-orange-500/20",
   ECONOMICS: "bg-amber-500/10 text-amber-400 border-amber-500/20",
   AI: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+  GEOPOLITICS: "bg-red-500/10 text-red-400 border-red-500/20",
+  CULTURE: "bg-pink-500/10 text-pink-400 border-pink-500/20",
+  SPORT: "bg-lime-500/10 text-lime-400 border-lime-500/20",
+  SPORTS: "bg-lime-500/10 text-lime-400 border-lime-500/20",
+  "GLOBAL PUBLIC PULSE": "bg-violet-500/10 text-violet-400 border-violet-500/20",
+  GLOBALPUBLICPULSE: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+  CRYPTO: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+  HEALTH: "bg-teal-500/10 text-teal-400 border-teal-500/20",
+  CLIMATE: "bg-green-500/10 text-green-400 border-green-500/20",
+  OTHER: "bg-slate-500/10 text-slate-400 border-slate-500/20",
 };
 
 // Left-border accent colour per category
@@ -57,6 +67,16 @@ const CATEGORY_ACCENT: Record<string, string> = {
   MARKETS: "border-l-orange-500/50",
   ECONOMICS: "border-l-amber-500/50",
   AI: "border-l-cyan-500/50",
+  GEOPOLITICS: "border-l-red-500/50",
+  CULTURE: "border-l-pink-500/50",
+  SPORT: "border-l-lime-500/50",
+  SPORTS: "border-l-lime-500/50",
+  "GLOBAL PUBLIC PULSE": "border-l-violet-500/50",
+  GLOBALPUBLICPULSE: "border-l-violet-500/50",
+  CRYPTO: "border-l-yellow-500/50",
+  HEALTH: "border-l-teal-500/50",
+  CLIMATE: "border-l-green-500/50",
+  OTHER: "border-l-slate-500/50",
 };
 
 // Bar colours for Today's Topics widget (matches category pills)
@@ -69,6 +89,16 @@ const CATEGORY_BAR_COLORS: Record<string, string> = {
   MARKETS: "bg-orange-500/40 group-hover/topic:bg-orange-500/60",
   ECONOMICS: "bg-amber-500/40 group-hover/topic:bg-amber-500/60",
   AI: "bg-cyan-500/40 group-hover/topic:bg-cyan-500/60",
+  GEOPOLITICS: "bg-red-500/40 group-hover/topic:bg-red-500/60",
+  CULTURE: "bg-pink-500/40 group-hover/topic:bg-pink-500/60",
+  SPORT: "bg-lime-500/40 group-hover/topic:bg-lime-500/60",
+  SPORTS: "bg-lime-500/40 group-hover/topic:bg-lime-500/60",
+  "GLOBAL PUBLIC PULSE": "bg-violet-500/40 group-hover/topic:bg-violet-500/60",
+  GLOBALPUBLICPULSE: "bg-violet-500/40 group-hover/topic:bg-violet-500/60",
+  CRYPTO: "bg-yellow-500/40 group-hover/topic:bg-yellow-500/60",
+  HEALTH: "bg-teal-500/40 group-hover/topic:bg-teal-500/60",
+  CLIMATE: "bg-green-500/40 group-hover/topic:bg-green-500/60",
+  OTHER: "bg-slate-500/40 group-hover/topic:bg-slate-500/60",
 };
 
 // ─── Animated Counter ───

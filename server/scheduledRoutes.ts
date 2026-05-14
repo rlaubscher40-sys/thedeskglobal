@@ -233,6 +233,24 @@ function sanitizeText(text: string | null | undefined): string | null {
     .replace(/\u00A0/g, " ");  // non-breaking space
 }
 
+/**
+ * Sanitise keyMetrics before storing: remove entries whose value is a long text string
+ * (> 60 chars) because those are descriptions, not numeric metrics. Logs a warning
+ * for each stripped entry so the scheduled task author can fix the upstream payload.
+ */
+function sanitiseKeyMetrics(raw: Record<string, any> | null | undefined): Record<string, any> | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return raw ?? null;
+  const cleaned: Record<string, any> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    if (typeof value === 'string' && value.length > 60) {
+      console.warn(`[Ingest] Stripped long-text metric value for key "${key}" (${value.length} chars): "${value.slice(0, 80)}..."`);
+      continue;
+    }
+    cleaned[key] = value;
+  }
+  return Object.keys(cleaned).length > 0 ? cleaned : null;
+}
+
 type ItemValidationResult = {
   index: number;
   success: boolean;
@@ -583,7 +601,7 @@ export function registerScheduledRoutes(app: Express) {
         })),
         signals: body.signals.map((s: string) => sanitizeText(s) || s),
         fullText: sanitizeText(body.fullText) || null,
-        keyMetrics: body.keyMetrics || null,
+        keyMetrics: sanitiseKeyMetrics(body.keyMetrics),
       };
 
       try {

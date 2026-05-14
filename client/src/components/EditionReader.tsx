@@ -58,6 +58,15 @@ const CAT: Record<string, { bg: string; text: string; border: string; dot: strin
   AI:          { bg: "rgba(34,211,238,0.1)",  text: "rgba(34,211,238,0.95)",  border: "rgba(34,211,238,0.25)",  dot: "#22d3ee", accent: "rgba(34,211,238,0.6)" },
   GEOPOLITICS: { bg: "rgba(248,113,113,0.1)", text: "rgba(248,113,113,0.95)", border: "rgba(248,113,113,0.25)", dot: "#f87171", accent: "rgba(248,113,113,0.6)" },
   ECONOMICS:   { bg: "rgba(245,166,35,0.1)",  text: "rgba(245,166,35,0.95)",  border: "rgba(245,166,35,0.25)",  dot: "#f5a623", accent: "rgba(245,166,35,0.6)" },
+  CULTURE:     { bg: "rgba(236,72,153,0.1)",  text: "rgba(236,72,153,0.95)",  border: "rgba(236,72,153,0.25)",  dot: "#ec4899", accent: "rgba(236,72,153,0.6)" },
+  SPORT:       { bg: "rgba(132,204,22,0.1)",  text: "rgba(132,204,22,0.95)",  border: "rgba(132,204,22,0.25)",  dot: "#84cc16", accent: "rgba(132,204,22,0.6)" },
+  SPORTS:      { bg: "rgba(132,204,22,0.1)",  text: "rgba(132,204,22,0.95)",  border: "rgba(132,204,22,0.25)",  dot: "#84cc16", accent: "rgba(132,204,22,0.6)" },
+  "GLOBAL PUBLIC PULSE": { bg: "rgba(139,92,246,0.1)", text: "rgba(139,92,246,0.95)", border: "rgba(139,92,246,0.25)", dot: "#8b5cf6", accent: "rgba(139,92,246,0.6)" },
+  GLOBALPUBLICPULSE: { bg: "rgba(139,92,246,0.1)", text: "rgba(139,92,246,0.95)", border: "rgba(139,92,246,0.25)", dot: "#8b5cf6", accent: "rgba(139,92,246,0.6)" },
+  CRYPTO:      { bg: "rgba(234,179,8,0.1)",   text: "rgba(234,179,8,0.95)",   border: "rgba(234,179,8,0.25)",   dot: "#eab308", accent: "rgba(234,179,8,0.6)" },
+  HEALTH:      { bg: "rgba(20,184,166,0.1)",  text: "rgba(20,184,166,0.95)",  border: "rgba(20,184,166,0.25)",  dot: "#14b8a6", accent: "rgba(20,184,166,0.6)" },
+  CLIMATE:     { bg: "rgba(34,197,94,0.1)",   text: "rgba(34,197,94,0.95)",   border: "rgba(34,197,94,0.25)",   dot: "#22c55e", accent: "rgba(34,197,94,0.6)" },
+  OTHER:       { bg: "rgba(100,116,139,0.1)", text: "rgba(100,116,139,0.95)", border: "rgba(100,116,139,0.25)", dot: "#64748b", accent: "rgba(100,116,139,0.6)" },
 };
 
 function getCat(category: string) {
@@ -965,6 +974,29 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                     else if (currentNum < prevNum) trend = "down";
                     else trend = "flat";
                   }
+                  // Long-text values (>40 chars) are descriptions, not metrics — render as compact note tile
+                  const isLongText = String(metric.value).length > 40;
+                  if (isLongText) {
+                    return (
+                      <div
+                        key={metric.label || `metric-${metricIdx}`}
+                        className="flex-none px-4 py-3 rounded-xl"
+                        style={{
+                          minWidth: "220px",
+                          maxWidth: "320px",
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(255,255,255,0.07)",
+                        }}
+                      >
+                        <p className="font-mono text-[9px] tracking-wide uppercase mb-1.5" style={{ color: "rgba(245,238,220,0.35)" }}>
+                          {metric.label}
+                        </p>
+                        <p className="text-[11px] leading-snug" style={{ color: "rgba(245,238,220,0.75)" }}>
+                          {metric.value}
+                        </p>
+                      </div>
+                    );
+                  }
                   return (
                     <div
                       key={metric.label || `metric-${metricIdx}`}
@@ -1050,14 +1082,23 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
           {signals.length > 0 && (() => {
             // Build category groups for signals
             const CAT_META_R: Record<string, { label: string; accentColor: string; dotColor: string; headerColor: string }> = {
-              MACRO:       { label: "Macro",       accentColor: "rgba(251,191,36,0.45)",  dotColor: "#fbbf24", headerColor: "rgba(251,191,36,0.9)"  },
-              PROPERTY:    { label: "Property",    accentColor: "rgba(52,211,153,0.45)",  dotColor: "#34d399", headerColor: "rgba(52,211,153,0.9)"  },
-              TECH:        { label: "Tech / AI",   accentColor: "rgba(96,165,250,0.45)",  dotColor: "#60a5fa", headerColor: "rgba(96,165,250,0.9)"  },
-              AI:          { label: "Tech / AI",   accentColor: "rgba(96,165,250,0.45)",  dotColor: "#60a5fa", headerColor: "rgba(96,165,250,0.9)"  },
-              POLICY:      { label: "Policy",      accentColor: "rgba(167,139,250,0.45)", dotColor: "#a78bfa", headerColor: "rgba(167,139,250,0.9)" },
-              SCIENCE:     { label: "Science",     accentColor: "rgba(251,113,133,0.45)", dotColor: "#fb7185", headerColor: "rgba(251,113,133,0.9)" },
-              GEOPOLITICS: { label: "Geopolitics", accentColor: "rgba(248,113,113,0.45)", dotColor: "#f87171", headerColor: "rgba(248,113,113,0.9)" },
-              MARKETS:     { label: "Markets",     accentColor: "rgba(251,146,60,0.45)",  dotColor: "#fb923c", headerColor: "rgba(251,146,60,0.9)"  },
+              MACRO:              { label: "Macro",              accentColor: "rgba(251,191,36,0.45)",  dotColor: "#fbbf24", headerColor: "rgba(251,191,36,0.9)"  },
+              PROPERTY:           { label: "Property",           accentColor: "rgba(52,211,153,0.45)",  dotColor: "#34d399", headerColor: "rgba(52,211,153,0.9)"  },
+              TECH:               { label: "Tech / AI",          accentColor: "rgba(96,165,250,0.45)",  dotColor: "#60a5fa", headerColor: "rgba(96,165,250,0.9)"  },
+              AI:                 { label: "Tech / AI",          accentColor: "rgba(96,165,250,0.45)",  dotColor: "#60a5fa", headerColor: "rgba(96,165,250,0.9)"  },
+              POLICY:             { label: "Policy",             accentColor: "rgba(167,139,250,0.45)", dotColor: "#a78bfa", headerColor: "rgba(167,139,250,0.9)" },
+              SCIENCE:            { label: "Science",            accentColor: "rgba(251,113,133,0.45)", dotColor: "#fb7185", headerColor: "rgba(251,113,133,0.9)" },
+              GEOPOLITICS:        { label: "Geopolitics",        accentColor: "rgba(248,113,113,0.45)", dotColor: "#f87171", headerColor: "rgba(248,113,113,0.9)" },
+              MARKETS:            { label: "Markets",            accentColor: "rgba(251,146,60,0.45)",  dotColor: "#fb923c", headerColor: "rgba(251,146,60,0.9)"  },
+              CULTURE:            { label: "Culture",            accentColor: "rgba(236,72,153,0.45)",  dotColor: "#ec4899", headerColor: "rgba(236,72,153,0.9)"  },
+              SPORT:              { label: "Sport",              accentColor: "rgba(132,204,22,0.45)",  dotColor: "#84cc16", headerColor: "rgba(132,204,22,0.9)"  },
+              SPORTS:             { label: "Sport",              accentColor: "rgba(132,204,22,0.45)",  dotColor: "#84cc16", headerColor: "rgba(132,204,22,0.9)"  },
+              "GLOBAL PUBLIC PULSE": { label: "Global Public Pulse", accentColor: "rgba(139,92,246,0.45)", dotColor: "#8b5cf6", headerColor: "rgba(139,92,246,0.9)" },
+              GLOBALPUBLICPULSE:  { label: "Global Public Pulse", accentColor: "rgba(139,92,246,0.45)", dotColor: "#8b5cf6", headerColor: "rgba(139,92,246,0.9)" },
+              CRYPTO:             { label: "Crypto",             accentColor: "rgba(234,179,8,0.45)",   dotColor: "#eab308", headerColor: "rgba(234,179,8,0.9)"   },
+              HEALTH:             { label: "Health",             accentColor: "rgba(20,184,166,0.45)",  dotColor: "#14b8a6", headerColor: "rgba(20,184,166,0.9)"  },
+              CLIMATE:            { label: "Climate",            accentColor: "rgba(34,197,94,0.45)",   dotColor: "#22c55e", headerColor: "rgba(34,197,94,0.9)"   },
+              OTHER:              { label: "Other",              accentColor: "rgba(100,116,139,0.45)", dotColor: "#64748b", headerColor: "rgba(100,116,139,0.9)" },
             };
             // Keyword-based signal categorisation — avoids all-same-category bug when only 1 topic exists
             function detectSignalCategoryR(text: string): string {
@@ -1067,11 +1108,17 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
               if (/asx|s&p|nasdaq|dow|share|stock|equity|bond|yield|spread|etf|fund|dividend|ipo|market cap|futures|options|commodity/.test(t)) return "MARKETS";
               if (/\bai\b|artificial intelligence|machine learning|llm|openai|google|microsoft|nvidia|automation|robot|algorithm|data centre|chip|semiconductor/.test(t)) return "AI";
               if (/government|policy|regulation|legislation|tax|reform|election|parliament|minister|ato|apra|asic|compliance|law|bill|senate/.test(t)) return "POLICY";
+              if (/bitcoin|ethereum|crypto|blockchain|defi|nft|web3|solana|binance|coinbase/.test(t)) return "CRYPTO";
+              if (/world cup|fifa|nba|nfl|afl|nrl|cricket|tennis|wimbledon|olympics|formula 1|\bf1\b|grand prix|sport|soccer|football|basketball|rugby|golf|ufc|mma/.test(t)) return "SPORT";
+              if (/bts|k-pop|kpop|taylor swift|beyonc|oscar|grammy|emmy|netflix|spotify|music|film|movie|tv show|celebrity|fashion|art|concert|album|box office/.test(t)) return "CULTURE";
+              if (/reddit|twitter|\bx\.com\b|trending|viral|meme|social media|tiktok|instagram|youtube|hashtag|thread|post went/.test(t)) return "GLOBAL PUBLIC PULSE";
+              if (/pandemic|virus|covid|vaccine|outbreak|who|health|medical|hospital|disease|cancer|mental health/.test(t)) return "HEALTH";
+              if (/climate|carbon|emission|net zero|solar|wind|renewable|drought|flood|wildfire|hurricane|earthquake|disaster/.test(t)) return "CLIMATE";
               if (/oil|brent|crude|iron ore|copper|gold|silver|lithium|coal|gas|lng|aud|usd|currency|exchange rate|trade|export|import/.test(t)) return "MARKETS";
-              if (/climate|energy|solar|wind|carbon|emission|science|research|study|discovery|health|medical|vaccine/.test(t)) return "SCIENCE";
+              if (/science|research|study|discovery|space|nasa|quantum/.test(t)) return "SCIENCE";
               if (/tech|technology|software|app|platform|startup|digital/.test(t)) return "AI";
-              if (/china|us |europe|global|geopolit|war|conflict|sanction|tariff|nato|\bun\b|imf|world bank/.test(t)) return "MACRO";
-              return topics.length > 0 ? (topics[0]?.category?.toUpperCase() || "MARKETS") : "MARKETS";
+              if (/china|us |europe|global|geopolit|war|conflict|sanction|tariff|nato|\bun\b|imf|world bank|russia|ukraine|middle east|israel|iran/.test(t)) return "GEOPOLITICS";
+              return "OTHER";
             }
             const grouped: Record<string, { meta: typeof CAT_META_R[string]; items: { signal: string; idx: number }[] }> = {};
             signals.forEach((signal, i) => {

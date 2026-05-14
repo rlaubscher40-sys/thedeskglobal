@@ -578,6 +578,16 @@ export default function Editions() {
                     const sparkData = buildSparklineData(editions, key, selected.editionNumber, 5);
                     const hasSparkData = sparkData.filter((d) => d.v !== null).length >= 2;
                     const sparkColour = trend ? (getTrendColour(key, trend).includes("emerald") ? "#34d399" : getTrendColour(key, trend).includes("red") ? "#f87171" : "#f59e0b") : "rgba(245,238,220,0.25)";
+                    // Long-text values (>40 chars) are descriptions, not metrics — render as compact note card
+                    const isLongText = String(value).length > 40;
+                    if (isLongText) {
+                      return (
+                        <div key={key || `metric-${metricIdx}`} className="col-span-2 sm:col-span-3 space-y-1 rounded-lg px-3 py-2.5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                          <p className="font-mono text-[10px] text-muted-foreground/70 tracking-wide uppercase">{key}</p>
+                          <p className="text-[12px] text-foreground/80 leading-snug">{String(value)}</p>
+                        </div>
+                      );
+                    }
                     return (
                       <div key={key || `metric-${metricIdx}`} className="space-y-1">
                         <p className="font-mono text-[10px] text-muted-foreground/70 tracking-wide">
@@ -710,14 +720,23 @@ export default function Editions() {
             const signals = selected.signals as string[];
             // Build category groups: assign each signal to the category of its matching topic (cycling)
             const CAT_META: Record<string, { label: string; borderColor: string; dotClass: string; bgClass: string; headerColor: string }> = {
-              MACRO:       { label: "Macro",       borderColor: "rgba(251,191,36,0.3)",  dotClass: "bg-amber-400",   bgClass: "bg-amber-500/[0.06]",   headerColor: "rgba(251,191,36,0.85)"  },
-              PROPERTY:    { label: "Property",    borderColor: "rgba(52,211,153,0.3)",  dotClass: "bg-emerald-400", bgClass: "bg-emerald-500/[0.06]", headerColor: "rgba(52,211,153,0.85)"  },
-              TECH:        { label: "Tech / AI",   borderColor: "rgba(96,165,250,0.3)",  dotClass: "bg-blue-400",    bgClass: "bg-blue-500/[0.06]",    headerColor: "rgba(96,165,250,0.85)"  },
-              AI:          { label: "Tech / AI",   borderColor: "rgba(96,165,250,0.3)",  dotClass: "bg-blue-400",    bgClass: "bg-blue-500/[0.06]",    headerColor: "rgba(96,165,250,0.85)"  },
-              POLICY:      { label: "Policy",      borderColor: "rgba(167,139,250,0.3)", dotClass: "bg-purple-400",  bgClass: "bg-purple-500/[0.06]",  headerColor: "rgba(167,139,250,0.85)" },
-              SCIENCE:     { label: "Science",     borderColor: "rgba(251,113,133,0.3)", dotClass: "bg-rose-400",    bgClass: "bg-rose-500/[0.06]",    headerColor: "rgba(251,113,133,0.85)" },
-              GEOPOLITICS: { label: "Geopolitics", borderColor: "rgba(248,113,113,0.3)", dotClass: "bg-red-400",     bgClass: "bg-red-500/[0.06]",     headerColor: "rgba(248,113,113,0.85)" },
-              MARKETS:     { label: "Markets",     borderColor: "rgba(251,146,60,0.3)",  dotClass: "bg-orange-400",  bgClass: "bg-orange-500/[0.06]",  headerColor: "rgba(251,146,60,0.85)"  },
+              MACRO:              { label: "Macro",              borderColor: "rgba(251,191,36,0.3)",  dotClass: "bg-amber-400",   bgClass: "bg-amber-500/[0.06]",   headerColor: "rgba(251,191,36,0.85)"  },
+              PROPERTY:           { label: "Property",           borderColor: "rgba(52,211,153,0.3)",  dotClass: "bg-emerald-400", bgClass: "bg-emerald-500/[0.06]", headerColor: "rgba(52,211,153,0.85)"  },
+              TECH:               { label: "Tech / AI",          borderColor: "rgba(96,165,250,0.3)",  dotClass: "bg-blue-400",    bgClass: "bg-blue-500/[0.06]",    headerColor: "rgba(96,165,250,0.85)"  },
+              AI:                 { label: "Tech / AI",          borderColor: "rgba(96,165,250,0.3)",  dotClass: "bg-blue-400",    bgClass: "bg-blue-500/[0.06]",    headerColor: "rgba(96,165,250,0.85)"  },
+              POLICY:             { label: "Policy",             borderColor: "rgba(167,139,250,0.3)", dotClass: "bg-purple-400",  bgClass: "bg-purple-500/[0.06]",  headerColor: "rgba(167,139,250,0.85)" },
+              SCIENCE:            { label: "Science",            borderColor: "rgba(251,113,133,0.3)", dotClass: "bg-rose-400",    bgClass: "bg-rose-500/[0.06]",    headerColor: "rgba(251,113,133,0.85)" },
+              GEOPOLITICS:        { label: "Geopolitics",        borderColor: "rgba(248,113,113,0.3)", dotClass: "bg-red-400",     bgClass: "bg-red-500/[0.06]",     headerColor: "rgba(248,113,113,0.85)" },
+              MARKETS:            { label: "Markets",            borderColor: "rgba(251,146,60,0.3)",  dotClass: "bg-orange-400",  bgClass: "bg-orange-500/[0.06]",  headerColor: "rgba(251,146,60,0.85)"  },
+              CULTURE:            { label: "Culture",            borderColor: "rgba(236,72,153,0.3)",  dotClass: "bg-pink-400",    bgClass: "bg-pink-500/[0.06]",    headerColor: "rgba(236,72,153,0.85)"  },
+              SPORT:              { label: "Sport",              borderColor: "rgba(132,204,22,0.3)",  dotClass: "bg-lime-400",    bgClass: "bg-lime-500/[0.06]",    headerColor: "rgba(132,204,22,0.85)"  },
+              SPORTS:             { label: "Sport",              borderColor: "rgba(132,204,22,0.3)",  dotClass: "bg-lime-400",    bgClass: "bg-lime-500/[0.06]",    headerColor: "rgba(132,204,22,0.85)"  },
+              "GLOBAL PUBLIC PULSE": { label: "Global Public Pulse", borderColor: "rgba(139,92,246,0.3)", dotClass: "bg-violet-400", bgClass: "bg-violet-500/[0.06]", headerColor: "rgba(139,92,246,0.85)" },
+              GLOBALPUBLICPULSE:  { label: "Global Public Pulse", borderColor: "rgba(139,92,246,0.3)", dotClass: "bg-violet-400", bgClass: "bg-violet-500/[0.06]", headerColor: "rgba(139,92,246,0.85)" },
+              CRYPTO:             { label: "Crypto",             borderColor: "rgba(234,179,8,0.3)",   dotClass: "bg-yellow-400",  bgClass: "bg-yellow-500/[0.06]",  headerColor: "rgba(234,179,8,0.85)"   },
+              HEALTH:             { label: "Health",             borderColor: "rgba(20,184,166,0.3)",  dotClass: "bg-teal-400",    bgClass: "bg-teal-500/[0.06]",    headerColor: "rgba(20,184,166,0.85)"  },
+              CLIMATE:            { label: "Climate",            borderColor: "rgba(34,197,94,0.3)",   dotClass: "bg-green-400",   bgClass: "bg-green-500/[0.06]",   headerColor: "rgba(34,197,94,0.85)"   },
+              OTHER:              { label: "Other",              borderColor: "rgba(100,116,139,0.3)", dotClass: "bg-slate-400",   bgClass: "bg-slate-500/[0.06]",   headerColor: "rgba(100,116,139,0.85)" },
             };
             // Keyword-based signal categorisation — avoids all-same-category bug when only 1 topic exists
             function detectSignalCategory(text: string): string {
@@ -727,11 +746,17 @@ export default function Editions() {
               if (/asx|s&p|nasdaq|dow|share|stock|equity|bond|yield|spread|etf|fund|dividend|ipo|market cap|futures|options|commodity/.test(t)) return "MARKETS";
               if (/\bai\b|artificial intelligence|machine learning|llm|openai|google|microsoft|nvidia|automation|robot|algorithm|data centre|chip|semiconductor/.test(t)) return "AI";
               if (/government|policy|regulation|legislation|tax|reform|election|parliament|minister|ato|apra|asic|compliance|law|bill|senate/.test(t)) return "POLICY";
+              if (/bitcoin|ethereum|crypto|blockchain|defi|nft|web3|solana|binance|coinbase/.test(t)) return "CRYPTO";
+              if (/world cup|fifa|nba|nfl|afl|nrl|cricket|tennis|wimbledon|olympics|formula 1|\bf1\b|grand prix|sport|soccer|football|basketball|rugby|golf|ufc|mma/.test(t)) return "SPORT";
+              if (/bts|k-pop|kpop|taylor swift|beyonc|oscar|grammy|emmy|netflix|spotify|music|film|movie|tv show|celebrity|fashion|art|concert|album|box office/.test(t)) return "CULTURE";
+              if (/reddit|twitter|\bx\.com\b|trending|viral|meme|social media|tiktok|instagram|youtube|hashtag|thread|post went/.test(t)) return "GLOBAL PUBLIC PULSE";
+              if (/pandemic|virus|covid|vaccine|outbreak|who|health|medical|hospital|disease|cancer|mental health/.test(t)) return "HEALTH";
+              if (/climate|carbon|emission|net zero|solar|wind|renewable|drought|flood|wildfire|hurricane|earthquake|disaster/.test(t)) return "CLIMATE";
               if (/oil|brent|crude|iron ore|copper|gold|silver|lithium|coal|gas|lng|aud|usd|currency|exchange rate|trade|export|import/.test(t)) return "MARKETS";
-              if (/climate|energy|solar|wind|carbon|emission|science|research|study|discovery|health|medical|vaccine/.test(t)) return "SCIENCE";
+              if (/science|research|study|discovery|space|nasa|quantum/.test(t)) return "SCIENCE";
               if (/tech|technology|software|app|platform|startup|digital/.test(t)) return "AI";
-              if (/china|us |europe|global|geopolit|war|conflict|sanction|tariff|nato|\bun\b|imf|world bank/.test(t)) return "MACRO";
-              return allTopics.length > 0 ? (allTopics[0]?.category?.toUpperCase() || "MARKETS") : "MARKETS";
+              if (/china|us |europe|global|geopolit|war|conflict|sanction|tariff|nato|\bun\b|imf|world bank|russia|ukraine|middle east|israel|iran/.test(t)) return "GEOPOLITICS";
+              return "OTHER";
             }
             const grouped: Record<string, { meta: typeof CAT_META[string]; items: { signal: string; idx: number }[] }> = {};
             signals.forEach((signal, i) => {
