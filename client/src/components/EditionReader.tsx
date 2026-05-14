@@ -922,16 +922,15 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                 </p>
                 <div className="h-px flex-1" style={{ background: "rgba(245,238,220,0.07)" }} />
               </div>
-              {/* 2-column body on wide screens */}
+              {/* Single-column prose — CSS columns cut sentences at arbitrary widths */}
               <div
-                className="text-sm whitespace-pre-wrap"
+                className="text-sm whitespace-pre-wrap mx-auto"
                 style={{
-                  color: "rgba(245,238,220,0.7)",
-                  lineHeight: 1.95,
+                  color: "rgba(245,238,220,0.72)",
+                  lineHeight: 2,
                   fontSize: "15px",
-                  columns: "auto 360px",
-                  columnGap: "48px",
-                  columnRule: "1px solid rgba(255,255,255,0.05)",
+                  maxWidth: "780px",
+                  letterSpacing: "0.01em",
                 }}
               >
                 {edition.fullText}
@@ -958,9 +957,9 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                   </span>
                 )}
               </p>
-              {/* Horizontal scrolling metric strip */}
+              {/* Metric tiles — wrap into a centred grid, fall back to horizontal scroll on very small screens */}
               <div
-                className="flex gap-3 overflow-x-auto pb-1"
+                className="flex flex-wrap justify-center gap-3"
                 style={{ scrollbarWidth: "none" }}
               >
                 {metricItems.filter((m) => m.label && m.label.trim() !== "").map((metric, metricIdx) => {

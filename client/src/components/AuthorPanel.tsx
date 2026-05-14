@@ -6,11 +6,13 @@ import { SubscribeForm } from "./SubscribeForm";
 import { Linkedin, Building2 } from "lucide-react";
 
 const IK_STATS = [
-  { label: "Properties purchased", value: "2,600+" },
+  { label: "Properties purchased", value: "2,900+" },
   { label: "Total acquisitions", value: "$1.6B+" },
   { label: "Equity generated", value: "$500M+" },
   { label: "Buyer's Agency of the Year", value: "3×" },
 ];
+
+const HEADSHOT = "/manus-storage/ruben-headshot_4c885a17.jpeg";
 
 interface AuthorPanelProps {
   collapsed?: boolean;
@@ -22,21 +24,31 @@ export function AuthorPanel({ collapsed = false }: AuthorPanelProps) {
       <div className="flex flex-col items-center py-3 gap-2">
         {/* Avatar only */}
         <div
-          className="w-8 h-8 rounded-full overflow-hidden shrink-0"
+          className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
           style={{
             border: "1.5px solid rgba(245,166,35,0.35)",
-            background: "rgba(245,166,35,0.1)",
+            background: "rgba(245,166,35,0.15)",
+            position: "relative",
           }}
         >
           <img
-            src="https://media.licdn.com/dms/image/v2/D5603AQFpxXjkHCJqvA/profile-displayphoto-shrink_800_800/B56ZPdBbJpHQAc-/0/1734600614660?e=1752710400&v=beta&t=Ks5qRhGAqEVVAXLJqNTjjZHi-nqBKQDFiTxAFWPLbM8"
+            src={HEADSHOT}
             alt="Ruben Laubscher"
-            className="w-full h-full object-cover object-top"
-            style={{ objectPosition: "50% 15%" }}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "50% 10%" }}
             onError={(e) => {
               e.currentTarget.style.display = "none";
+              const parent = e.currentTarget.parentElement;
+              if (parent) {
+                const fallback = parent.querySelector(".avatar-fallback") as HTMLElement | null;
+                if (fallback) fallback.style.display = "flex";
+              }
             }}
           />
+          <span
+            className="avatar-fallback font-mono font-bold"
+            style={{ display: "none", fontSize: "10px", color: "rgba(245,166,35,0.9)", position: "absolute", inset: 0, alignItems: "center", justifyContent: "center" }}
+          >RL</span>
         </div>
       </div>
     );
@@ -53,22 +65,31 @@ export function AuthorPanel({ collapsed = false }: AuthorPanelProps) {
       {/* Header: photo + name */}
       <div className="px-4 pt-4 pb-3 flex items-center gap-3">
         <div
-          className="w-12 h-12 rounded-full overflow-hidden shrink-0"
+          className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
           style={{
             border: "2px solid rgba(245,166,35,0.4)",
-            background: "rgba(245,166,35,0.1)",
+            background: "rgba(245,166,35,0.15)",
+            position: "relative",
           }}
         >
           <img
-            src="https://media.licdn.com/dms/image/v2/D5603AQFpxXjkHCJqvA/profile-displayphoto-shrink_800_800/B56ZPdBbJpHQAc-/0/1734600614660?e=1752710400&v=beta&t=Ks5qRhGAqEVVAXLJqNTjjZHi-nqBKQDFiTxAFWPLbM8"
+            src={HEADSHOT}
             alt="Ruben Laubscher"
             className="w-full h-full object-cover"
-            style={{ objectPosition: "50% 15%" }}
+            style={{ objectPosition: "50% 10%" }}
             onError={(e) => {
-              // Fallback to initials if image fails
               e.currentTarget.style.display = "none";
+              const parent = e.currentTarget.parentElement;
+              if (parent) {
+                const fallback = parent.querySelector(".avatar-fallback") as HTMLElement | null;
+                if (fallback) fallback.style.display = "flex";
+              }
             }}
           />
+          <span
+            className="avatar-fallback font-mono font-bold"
+            style={{ display: "none", fontSize: "13px", color: "rgba(245,166,35,0.9)", position: "absolute", inset: 0, alignItems: "center", justifyContent: "center" }}
+          >RL</span>
         </div>
         <div className="min-w-0">
           <p

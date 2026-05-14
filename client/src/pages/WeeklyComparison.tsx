@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus, BarChart3, Loader2, Flame, Activity, Clock } from "lucide-react";
 import { useMemo, useState } from "react";
 import { SignalEmptyState } from "@/components/SignalEmptyState";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LineChart, Line } from "recharts";
 
 const CAT_COLORS: Record<string, string> = {
   // Core commercial categories
@@ -276,19 +276,45 @@ export default function WeeklyComparison() {
         <section>
           <SectionHeader icon={<BarChart3 className="w-4 h-4" />} label="Topic Frequency by Edition" sub="How many deep dives per category appeared in each weekly edition" />
           <div className="rounded-xl p-4" style={{ background: "rgba(10,12,24,0.6)", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={freqChartData} margin={{ top: 8, right: 16, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={freqChartData} margin={{ top: 8, right: 16, left: -10, bottom: 0 }} barSize={28}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="label" tick={{ fontSize: 10, fill: "rgba(245,238,220,0.4)", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: "rgba(245,238,220,0.4)", fontFamily: "monospace" }} axisLine={false} tickLine={false} width={24} />
-                <Tooltip content={<MetricTooltip />} />
-                <Legend wrapperStyle={{ fontSize: "10px", fontFamily: "monospace", color: "rgba(245,238,220,0.5)" }} />
+                <Tooltip
+                  cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null;
+                    const nonZero = (payload as any[]).filter((p) => p.value > 0);
+                    if (!nonZero.length) return null;
+                    return (
+                      <div style={{ background: "rgba(10,12,24,0.97)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 14px", fontSize: "11px", minWidth: "140px" }}>
+                        <div className="font-mono mb-2" style={{ color: "rgba(245,238,220,0.5)", fontSize: "10px" }}>{label}</div>
+                        {nonZero.map((p: any) => (
+                          <div key={p.dataKey} className="flex items-center gap-2 mb-1">
+                            <span style={{ width: 8, height: 8, borderRadius: "2px", background: p.fill, display: "inline-block", flexShrink: 0 }} />
+                            <span style={{ color: "rgba(245,238,220,0.6)", textTransform: "capitalize", fontSize: "10px" }}>{p.name.toLowerCase()}</span>
+                            <span className="font-mono font-semibold ml-auto" style={{ color: p.fill }}>{p.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
                 {freqCategories.filter((cat) => cat && cat.trim() !== "").map((cat, fIdx) => (
-                  <Line key={cat || `freq-${fIdx}`} type="monotone" dataKey={cat} name={cat} stroke={catColor(cat)}
-                    strokeWidth={1.5} dot={{ r: 3, fill: catColor(cat), strokeWidth: 0 }} activeDot={{ r: 4 }} connectNulls />
+                  <Bar key={cat || `freq-${fIdx}`} dataKey={cat} name={cat} stackId="a" fill={catColor(cat)} radius={fIdx === freqCategories.length - 1 ? [3, 3, 0, 0] : [0, 0, 0, 0]} />
                 ))}
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
+            {/* Custom legend grid */}
+            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+              {freqCategories.filter((cat) => cat && cat.trim() !== "").map((cat) => (
+                <div key={cat} className="flex items-center gap-1.5">
+                  <span style={{ width: 10, height: 10, borderRadius: "2px", background: catColor(cat), display: "inline-block", flexShrink: 0 }} />
+                  <span className="font-mono" style={{ fontSize: "9px", color: "rgba(245,238,220,0.5)", textTransform: "capitalize" }}>{cat.toLowerCase()}</span>
+                </div>
+              ))}
+            </div>
           </div>
           {signalFreq && signalFreq.length >= 2 && (() => {
             const last = signalFreq[signalFreq.length - 1];
