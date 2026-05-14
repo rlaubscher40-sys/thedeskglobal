@@ -652,7 +652,7 @@ export default function Editions() {
                 "border-white/[0.12]";
               return (
                 <div
-                  key={i}
+                  key={`deepdive-${selected.id}-${i}`}
                   id={`topic-${i}`}
                   className={`rounded-xl border-l-4 ${accentBorder} scroll-mt-6 transition-all duration-200 hover:border-opacity-70`}
                   style={{
@@ -850,7 +850,7 @@ export default function Editions() {
                     "bg-white/30";
                   return (
                     <button
-                      key={i}
+                      key={`toc-${selected.id}-${i}`}
                       onClick={() => {
                         const el = document.getElementById(`topic-${i}`);
                         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
