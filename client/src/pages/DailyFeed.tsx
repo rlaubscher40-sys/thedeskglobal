@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { LinkedInPostModal } from "@/components/LinkedInPostModal";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import { keepPreviousData } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { toast } from "sonner";
@@ -744,7 +745,7 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
         </div>
       )}
 
-      {/* Substack subscribe CTA */}
+      {/* Email subscribe CTA */}
       <div
         style={{
           padding: "16px",
@@ -757,20 +758,12 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
         }}
       >
         <p className="text-[11px] text-amber-400/80 font-medium mb-1">
-          Get the weekly edition in your inbox
+          Get the daily briefing
         </p>
-        <p className="text-[10px] text-muted-foreground/60 mb-3 leading-relaxed">
-          Every Wednesday at 7am AEST. Deep-dive analysis, key metrics, and partner talking points.
+        <p className="text-[10px] text-muted-foreground/60 mb-2 leading-relaxed">
+          Property, macro, markets, and policy. 7am AEST. Free.
         </p>
-        <a
-          href="https://rubenlaubscher.substack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Subscribe to The Desk on Substack"
-          className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-amber-400 hover:text-amber-300 transition-colors"
-        >
-          Subscribe on Substack &rarr;
-        </a>
+        <SubscribeForm source="daily-feed" variant="compact" />
       </div>
     </div>
   );

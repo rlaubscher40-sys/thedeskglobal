@@ -506,6 +506,57 @@ Output as JSON with keys: title, subtitle, body (the full essay as plain text wi
       }),
   }),
 
+  // ─── Subscribers ───
+  subscribers: router({
+    /** Public: subscribe with email (and optional name) */
+    subscribe: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        name: z.string().max(256).optional(),
+        source: z.string().max(64).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const token = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+        try {
+          await db.upsertSubscriber({
+            email: input.email.toLowerCase().trim(),
+            name: input.name ?? null,
+            source: input.source ?? 'homepage',
+            confirmToken: token,
+          });
+        } catch (e: any) {
+          if (e?.code === 'ER_DUP_ENTRY' || e?.message?.includes('unique')) {
+            return { success: true, alreadySubscribed: true };
+          }
+          throw e;
+        }
+        return { success: true, alreadySubscribed: false };
+      }),
+    /** Public: confirm email via token */
+    confirm: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        const ok = await db.confirmSubscriber(input.token);
+        return { success: ok };
+      }),
+    /** Public: unsubscribe via email */
+    unsubscribe: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        await db.unsubscribeEmail(input.email.toLowerCase().trim());
+        return { success: true };
+      }),
+    /** Admin: list all subscribers */
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user?.role !== 'admin') throw new Error('Forbidden');
+      return db.listSubscribers();
+    }),
+    /** Public: subscriber count */
+    count: publicProcedure.query(async () => {
+      return db.getSubscriberCount();
+    }),
+  }),
+
   // ─── Admin Dashboard ───
   admin: router({
     stats: protectedProcedure.query(async ({ ctx }) => {

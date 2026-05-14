@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Newspaper, Target, Users, Zap, ExternalLink, ArrowRight } from "lucide-react";
+import { Newspaper, Target, Users, Zap, ExternalLink, ArrowRight, Mail } from "lucide-react";
 import { Link } from "wouter";
+import { SubscribeForm } from "@/components/SubscribeForm";
 
 const HERO_IMAGE = "/manus-storage/the-signal-archive/static/Generatedimage1_b6b17d2e.png";
 
@@ -374,6 +375,48 @@ export default function About() {
               <span style={{ fontSize: "11px", color: "rgba(245,166,35,0.8)", fontWeight: 600 }}>Today's feed</span>
             </div>
           </Link>
+        </div>
+      </section>
+
+      {/* Subscribe CTA */}
+      <section style={{ marginBottom: "32px" }}>
+        <div
+          style={{
+            padding: "32px 28px",
+            background: "rgba(245,166,35,0.05)",
+            border: "1px solid rgba(245,166,35,0.18)",
+            borderRadius: "16px",
+            boxShadow: "0 2px 24px rgba(0,0,0,0.35)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "8px",
+                background: "rgba(245,166,35,0.12)",
+                border: "1px solid rgba(245,166,35,0.25)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Mail style={{ width: "14px", height: "14px", color: "rgba(245,166,35,0.85)" }} />
+            </div>
+            <h2
+              className="font-mono uppercase tracking-[0.18em]"
+              style={{ fontSize: "9px", fontWeight: 700, color: "rgba(245,238,220,0.5)" }}
+            >
+              Get the daily briefing
+            </h2>
+          </div>
+          <p style={{ fontSize: "14px", color: "rgba(245,238,220,0.6)", lineHeight: 1.7, marginBottom: "20px", maxWidth: "52ch" }}>
+            Property, macro, markets, and policy. Filtered for what matters to people who advise clients on wealth.
+            Lands at 7am AEST. Free.
+          </p>
+          <SubscribeForm source="about" variant="full" />
         </div>
       </section>
 

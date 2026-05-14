@@ -7,6 +7,7 @@ import {
   readingQueue, InsertReadingQueueItem,
   weeklyNotes, InsertWeeklyNote,
   conversationTracker, InsertConversationTrackerEntry,
+  subscribers,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -610,4 +611,60 @@ export async function getAdminStats() {
       publishedAt: e.publishedAt,
     })),
   };
+}
+
+// ─── Subscribers ───
+
+export async function upsertSubscriber(data: {
+  email: string;
+  name?: string | null;
+  source?: string;
+  confirmToken?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(subscribers).values({
+    email: data.email,
+    name: data.name ?? null,
+    source: data.source ?? 'homepage',
+    confirmToken: data.confirmToken ?? null,
+  });
+}
+
+export async function confirmSubscriber(token: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const result = await db.select().from(subscribers)
+    .where(eq(subscribers.confirmToken, token))
+    .limit(1);
+  if (!result[0]) return false;
+  await db.update(subscribers)
+    .set({ confirmedAt: new Date(), confirmToken: null })
+    .where(eq(subscribers.confirmToken, token));
+  return true;
+}
+
+export async function unsubscribeEmail(email: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(subscribers)
+    .set({ unsubscribedAt: new Date() })
+    .where(eq(subscribers.email, email));
+}
+
+export async function listSubscribers() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(subscribers).orderBy(desc(subscribers.createdAt));
+}
+
+export async function getSubscriberCount(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(subscribers)
+    .where(and(
+      sql`${subscribers.unsubscribedAt} IS NULL`,
+    ));
+  return Number(result[0]?.count ?? 0);
 }

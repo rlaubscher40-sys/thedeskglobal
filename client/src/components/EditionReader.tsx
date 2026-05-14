@@ -37,6 +37,7 @@ import {
   Linkedin,
   Check,
   Copy,
+  Mail,
 } from "lucide-react";
 import type { Edition, EditionTopic } from "../../../drizzle/schema";
 import { getTrendColour, getMetricTooltip } from "@/lib/normaliseKeyMetrics";
@@ -850,6 +851,36 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                   <Share2 className="w-3 h-3" />
                   Share Edition
                 </button>
+                {/* Copy link to this edition */}
+                <button
+                  onClick={() => {
+                    const url = `${window.location.origin}/editions`;
+                    navigator.clipboard.writeText(url).then(() => {
+                      // Brief toast via title flash
+                      const orig = document.title;
+                      document.title = "Link copied!";
+                      setTimeout(() => { document.title = orig; }, 1500);
+                    });
+                  }}
+                  className="flex items-center gap-1.5 text-xs font-mono transition-all"
+                  style={{ color: "rgba(245,238,220,0.4)" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "rgba(52,211,153,0.9)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(245,238,220,0.4)")}
+                >
+                  <Copy className="w-3 h-3" />
+                  Copy link
+                </button>
+                {/* Forward to partner via mailto */}
+                <a
+                  href={`mailto:?subject=Worth reading: The Desk Edition ${edition.editionNumber} (${edition.weekRange})&body=Hi,%0A%0AThought this week's briefing from The Desk was worth sharing.%0A%0AEdition ${edition.editionNumber} covers: ${topics.slice(0,3).map((t: any) => t.title).join(', ')}.%0A%0ARead it here: ${window.location.origin}/editions%0A%0A--${edition.rubensTake ? '%0A%0ARuben\'s take: ' + encodeURIComponent(edition.rubensTake) : ''}`}
+                  className="flex items-center gap-1.5 text-xs font-mono transition-all"
+                  style={{ color: "rgba(245,238,220,0.4)" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "rgba(245,166,35,0.9)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(245,238,220,0.4)")}
+                >
+                  <Mail className="w-3 h-3" />
+                  Forward to partner
+                </a>
                 <a
                   href="https://rubenlaubscher.substack.com"
                   target="_blank"
@@ -1002,7 +1033,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                 <div className="columns-1 md:columns-2 xl:columns-3 gap-5">
                   {topics.slice(1).map((topic, i) => (
                     <TopicCard
-                      key={i}
+                      key={i + 1}
                       topic={topic}
                       editionNumber={edition.editionNumber}
                       bookmarked={bookmarked}

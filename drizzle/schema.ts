@@ -10,6 +10,8 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  /** Whether this user has a premium subscription */
+  isPremium: boolean("isPremium").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -150,3 +152,25 @@ export const conversationTracker = mysqlTable("conversation_tracker", {
 
 export type ConversationTrackerEntry = typeof conversationTracker.$inferSelect;
 export type InsertConversationTrackerEntry = typeof conversationTracker.$inferInsert;
+
+/**
+ * Email subscribers (newsletter sign-ups from the public landing page).
+ */
+export const subscribers = mysqlTable("subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  name: varchar("name", { length: 256 }),
+  /** Where they subscribed from: homepage, story, share-link, etc. */
+  source: varchar("source", { length: 64 }).default("homepage").notNull(),
+  /** Token used to confirm email address */
+  confirmToken: varchar("confirmToken", { length: 128 }),
+  /** When they confirmed their email */
+  confirmedAt: timestamp("confirmedAt"),
+  /** When they unsubscribed (null = still subscribed) */
+  unsubscribedAt: timestamp("unsubscribedAt"),
+  /** Premium access flag for future monetisation */
+  isPremium: boolean("isPremium").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type Subscriber = typeof subscribers.$inferSelect;
+export type InsertSubscriber = typeof subscribers.$inferInsert;

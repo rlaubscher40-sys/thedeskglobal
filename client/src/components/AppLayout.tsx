@@ -23,6 +23,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { AuthorPanel } from "./AuthorPanel";
 import { useState, useEffect, useCallback, type ReactNode } from "react";
 import { useLocation, Link } from "wouter";
 
@@ -373,83 +374,83 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             })}
           </nav>
 
-          {/* Footer */}
-          {!collapsed && (
-            <div
-              className="px-5 py-4"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
-            >
-              {isAuthenticated ? (
-                <div className="flex items-center gap-2.5">
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-                    style={{
-                      background: "rgba(245,166,35,0.12)",
-                      border: "1px solid rgba(245,166,35,0.2)",
-                    }}
-                  >
-                    <span
-                      className="font-semibold"
-                      style={{ fontSize: "10px", color: "rgba(245,166,35,0.9)" }}
+          {/* Footer: AuthorPanel + sign-in + shortcuts */}
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+            {/* Author panel — always shown, adapts to collapsed state */}
+            <AuthorPanel collapsed={collapsed} />
+
+            {!collapsed && (
+              <div className="px-5 pb-4">
+                {/* Sign-in / user row */}
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <div
+                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                      style={{
+                        background: "rgba(245,166,35,0.12)",
+                        border: "1px solid rgba(245,166,35,0.2)",
+                      }}
                     >
-                      {user?.name?.[0]?.toUpperCase() || "R"}
-                    </span>
+                      <span
+                        className="font-semibold"
+                        style={{ fontSize: "9px", color: "rgba(245,166,35,0.9)" }}
+                      >
+                        {user?.name?.[0]?.toUpperCase() || "R"}
+                      </span>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium truncate" style={{ color: "rgba(245,238,220,0.6)" }}>
+                        {user?.name || "Ruben"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium truncate" style={{ color: "rgba(245,238,220,0.7)" }}>
-                      {user?.name || "Ruben"}
-                    </p>
-                    <p className="font-mono uppercase tracking-widest" style={{ fontSize: "8px", color: "rgba(245,238,220,0.25)" }}>
-                      Partner
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <a
-                  href={getLoginUrl()}
-                  className="flex items-center gap-2 transition-colors"
-                  style={{ color: "rgba(245,238,220,0.35)", fontSize: "12px" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(245,166,35,0.8)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(245,238,220,0.35)")}
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  Sign in
-                </a>
-              )}
-              {/* Keyboard shortcut hints */}
-              <div className="flex items-center gap-2 mt-3 mb-1">
-                {[["J", "next"], ["K", "prev"], ["S", "save"]].map(([key, label]) => (
-                  <div key={key} className="flex items-center gap-1">
-                    <kbd
-                      className="font-mono inline-flex items-center justify-center rounded"
-                      style={{ fontSize: "8px", padding: "1px 4px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(245,238,220,0.4)", lineHeight: 1.4 }}
-                    >{key}</kbd>
-                    <span style={{ fontSize: "7px", color: "rgba(245,238,220,0.2)", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center justify-between mt-2">
-                <p
-                  className="font-mono uppercase tracking-widest"
-                  style={{ fontSize: "7.5px", color: "rgba(245,238,220,0.2)" }}
-                >
-                  7am AEST daily
-                </p>
-                {toggleTheme && (
-                  <button
-                    onClick={toggleTheme}
-                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                    className="p-1.5 rounded-md transition-all"
-                    style={{ color: "rgba(245,238,220,0.3)" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(245,238,220,0.7)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(245,238,220,0.3)")}
+                ) : (
+                  <a
+                    href={getLoginUrl()}
+                    className="flex items-center gap-2 mb-3 transition-colors"
+                    style={{ color: "rgba(245,238,220,0.35)", fontSize: "12px" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(245,166,35,0.8)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(245,238,220,0.35)")}
                   >
-                    {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                  </button>
+                    <LogIn className="w-3.5 h-3.5" />
+                    Sign in
+                  </a>
                 )}
+                {/* Keyboard shortcut hints */}
+                <div className="flex items-center gap-2 mb-2">
+                  {[["J", "next"], ["K", "prev"], ["S", "save"]].map(([key, label]) => (
+                    <div key={key} className="flex items-center gap-1">
+                      <kbd
+                        className="font-mono inline-flex items-center justify-center rounded"
+                        style={{ fontSize: "8px", padding: "1px 4px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(245,238,220,0.4)", lineHeight: 1.4 }}
+                      >{key}</kbd>
+                      <span style={{ fontSize: "7px", color: "rgba(245,238,220,0.2)", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between">
+                  <p
+                    className="font-mono uppercase tracking-widest"
+                    style={{ fontSize: "7.5px", color: "rgba(245,238,220,0.2)" }}
+                  >
+                    7am AEST daily
+                  </p>
+                  {toggleTheme && (
+                    <button
+                      onClick={toggleTheme}
+                      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                      className="p-1.5 rounded-md transition-all"
+                      style={{ color: "rgba(245,238,220,0.3)" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(245,238,220,0.7)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(245,238,220,0.3)")}
+                    >
+                      {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </motion.aside>
 
         {/* ─── Mobile Sidebar ──────────────────────────────────── */}

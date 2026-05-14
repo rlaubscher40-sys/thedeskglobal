@@ -58,3 +58,17 @@
 - [x] Redirect /topics and /topics/:category to /explore?category=X
 - [x] Update AppLayout.tsx nav: remove Topics, Search, Notes — add Explore
 - [x] Update App.tsx routes: /search and /topics/* redirect to /explore
+
+## Core Goal Features
+- [ ] Fix duplicate empty-string key errors on /editions page
+- [ ] Fix headshot display in AppLayout sidebar (larger, better crop)
+- [ ] Add subscribers DB table (email, name, confirmedAt, source, premiumAt)
+- [ ] Add subscribe tRPC procedures (subscribe, confirm, unsubscribe)
+- [ ] Add prominent subscribe CTA on homepage hero and story pages
+- [ ] Add inline subscribe form in AppLayout sidebar
+- [ ] Add shareable public story URL (/story/:id accessible without login)
+- [ ] Add "Share" button on story pages and feed cards (copy link + native share)
+- [ ] Add "Forward this briefing" email button on daily feed
+- [ ] Add Ruben author panel in AppLayout sidebar (headshot, title, IK stats, LinkedIn)
+- [ ] Add About page with Ruben bio, IK proof points, and media-kit-style layout
+- [ ] Add premium flag to users table for future monetisation gate

@@ -1,0 +1,9 @@
+{
+  "query": "\nALTER TABLE `users` ADD COLUMN `isPremium` boolean NOT NULL DEFAULT false;\n\nCREATE TABLE `subscribers` (\n  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,\n  `email` varchar(320) NOT NULL,\n  `name` varchar(256),\n  `source` varchar(64) NOT NULL DEFAULT 'homepage',\n  `confirmToken` varchar(128),\n  `confirmedAt` timestamp,\n  `unsubscribedAt` timestamp,\n  `isPremium` boolean NOT NULL DEFAULT false,\n  `createdAt` timestamp NOT NULL DEFAULT (now()),\n  CONSTRAINT `subscribers_email_unique` UNIQUE(`email`)\n);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute \nALTER TABLE `users` ADD COLUMN `isPremium` boolean NOT NULL DEFAULT false;\n\nCREATE TABLE `subscribers` (\n  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,\n  `email` varchar(320) NOT NULL,\n  `name` varchar(256),\n  `source` varchar(64) NOT NULL DEFAULT 'homepage',\n  `confirmToken` varchar(128),\n  `confirmedAt` timestamp,\n  `unsubscribedAt` timestamp,\n  `isPremium` boolean NOT NULL DEFAULT false,\n  `createdAt` timestamp NOT NULL DEFAULT (now()),\n  CONSTRAINT `subscribers_email_unique` UNIQUE(`email`)\n);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2296
+}
