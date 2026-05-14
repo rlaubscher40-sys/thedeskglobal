@@ -7,10 +7,28 @@ import { SignalEmptyState } from "@/components/SignalEmptyState";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
 
 const CAT_COLORS: Record<string, string> = {
-  MACRO: "#f59e0b", PROPERTY: "#34d399", AI: "#60a5fa", TECH: "#60a5fa",
-  POLICY: "#a78bfa", GEOPOLITICS: "#f87171", SCIENCE: "#fb7185", MARKETS: "#fb923c", OTHER: "#94a3b8",
+  // Core commercial categories
+  PROPERTY:            "#34d399", // emerald
+  MACRO:               "#f59e0b", // amber
+  AI:                  "#60a5fa", // blue
+  TECH:                "#38bdf8", // sky
+  MARKETS:             "#fb923c", // orange
+  POLICY:              "#a78bfa", // violet
+  SCIENCE:             "#e879f9", // fuchsia
+  // Global Public Pulse categories
+  GEOPOLITICS:         "#f87171", // red
+  "GLOBAL PUBLIC PULSE": "#c084fc", // purple
+  CULTURE:             "#f472b6", // pink
+  SPORT:               "#a3e635", // lime
+  CRYPTO:              "#fbbf24", // yellow
+  HEALTH:              "#2dd4bf", // teal
+  CLIMATE:             "#4ade80", // green
+  OTHER:               "#94a3b8", // slate
 };
-function catColor(cat: string) { return CAT_COLORS[(cat || "").toUpperCase()] ?? CAT_COLORS.OTHER; }
+function catColor(cat: string) {
+  const key = (cat || "").toUpperCase();
+  return CAT_COLORS[key] ?? CAT_COLORS.OTHER;
+}
 
 const CHARTED_METRICS = [
   { key: "RBA Cash Rate", label: "RBA Cash Rate", color: "#f59e0b" },
