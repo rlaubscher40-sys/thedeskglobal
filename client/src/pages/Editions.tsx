@@ -307,7 +307,7 @@ export default function Editions() {
                         catKey === "POLICY" ? "bg-purple-400" :
                         catKey === "SCIENCE" ? "bg-rose-400" :
                         "bg-white/30";
-                      return <div key={i} className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />;
+                      return <div key={`dot-${edition.id}-${i}`} className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />;
                     })}
                   </div>
                 </button>
@@ -341,7 +341,7 @@ export default function Editions() {
                 <div className="flex items-center gap-1 mt-1 flex-wrap">
                   {(edition.topics as any[])?.slice(0, 3).map((t: any, i: number) => (
                     <span
-                      key={i}
+                      key={`cat-${edition.id}-${i}`}
                       className="inline-block px-1.5 py-px text-[8px] font-mono tracking-widest uppercase bg-white/[0.04] text-muted-foreground/70 rounded-sm"
                     >
                       {t.category}

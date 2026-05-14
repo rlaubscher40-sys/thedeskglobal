@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM editions WHERE id = 60041",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute DELETE FROM editions WHERE id = 60041",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1805
+}

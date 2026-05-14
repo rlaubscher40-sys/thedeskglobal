@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, editionNumber, weekRange FROM editions ORDER BY id DESC LIMIT 1",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute SELECT id, editionNumber, weekRange FROM editions ORDER BY id DESC LIMIT 1",
+  "rows": [
+    {
+      "id": "60020",
+      "editionNumber": "1010",
+      "weekRange": "07 May - 13 May 2026"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\teditionNumber\tweekRange\n60020\t1010\t07 May - 13 May 2026\n",
+  "stderr": "",
+  "execution_time_ms": 1734
+}
