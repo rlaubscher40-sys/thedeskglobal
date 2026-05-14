@@ -719,12 +719,25 @@ export default function Editions() {
               GEOPOLITICS: { label: "Geopolitics", borderColor: "rgba(248,113,113,0.3)", dotClass: "bg-red-400",     bgClass: "bg-red-500/[0.06]",     headerColor: "rgba(248,113,113,0.85)" },
               MARKETS:     { label: "Markets",     borderColor: "rgba(251,146,60,0.3)",  dotClass: "bg-orange-400",  bgClass: "bg-orange-500/[0.06]",  headerColor: "rgba(251,146,60,0.85)"  },
             };
-            // Group signals by category
+            // Keyword-based signal categorisation — avoids all-same-category bug when only 1 topic exists
+            function detectSignalCategory(text: string): string {
+              const t = text.toLowerCase();
+              if (/clearance|dwelling|housing|property|auction|rent|landlord|tenant|mortgage|suburb|sqm|vacancy|listing|home loan|buyer|seller|real estate/.test(t)) return "PROPERTY";
+              if (/rba|interest rate|inflation|cpi|gdp|unemployment|recession|monetary|fiscal|budget|deficit|surplus|treasury|reserve bank|cash rate/.test(t)) return "MACRO";
+              if (/asx|s&p|nasdaq|dow|share|stock|equity|bond|yield|spread|etf|fund|dividend|ipo|market cap|futures|options|commodity/.test(t)) return "MARKETS";
+              if (/\bai\b|artificial intelligence|machine learning|llm|openai|google|microsoft|nvidia|automation|robot|algorithm|data centre|chip|semiconductor/.test(t)) return "AI";
+              if (/government|policy|regulation|legislation|tax|reform|election|parliament|minister|ato|apra|asic|compliance|law|bill|senate/.test(t)) return "POLICY";
+              if (/oil|brent|crude|iron ore|copper|gold|silver|lithium|coal|gas|lng|aud|usd|currency|exchange rate|trade|export|import/.test(t)) return "MARKETS";
+              if (/climate|energy|solar|wind|carbon|emission|science|research|study|discovery|health|medical|vaccine/.test(t)) return "SCIENCE";
+              if (/tech|technology|software|app|platform|startup|digital/.test(t)) return "AI";
+              if (/china|us |europe|global|geopolit|war|conflict|sanction|tariff|nato|\bun\b|imf|world bank/.test(t)) return "MACRO";
+              return allTopics.length > 0 ? (allTopics[0]?.category?.toUpperCase() || "MARKETS") : "MARKETS";
+            }
             const grouped: Record<string, { meta: typeof CAT_META[string]; items: { signal: string; idx: number }[] }> = {};
             signals.forEach((signal, i) => {
-              const matchTopic = allTopics[i % Math.max(allTopics.length, 1)];
-              const rawCat = matchTopic?.category?.toUpperCase();
-              const catKey = (rawCat && rawCat.trim() !== "") ? rawCat : "OTHER";
+              // Normalise TECH -> AI to avoid duplicate catKey collision (both share same label/style)
+              const rawKey = detectSignalCategory(signal);
+              const catKey = rawKey === "TECH" ? "AI" : rawKey;
               const meta = CAT_META[catKey] || { label: catKey, borderColor: "rgba(255,255,255,0.1)", dotClass: "bg-white/30", bgClass: "bg-white/[0.03]", headerColor: "rgba(255,255,255,0.5)" };
               if (!grouped[catKey]) grouped[catKey] = { meta, items: [] };
               grouped[catKey].items.push({ signal, idx: i });
