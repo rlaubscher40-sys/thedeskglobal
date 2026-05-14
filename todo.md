@@ -50,3 +50,11 @@
 - [x] Display full hero image in feed item detail modal (StoryPage + expanded card)
 - [x] Add homepage hero banner image (DailyFeed is the homepage; IntelligenceSnapshot serves as hero)
 - [x] Display edition cover image in weekly edition reader (EditionReader + Editions HeroParallaxBg)
+
+## Navigation Cleanup & Explore Page
+- [x] Remove Notes page from nav, App.tsx routes, and delete Notes.tsx
+- [x] Remove notes tRPC procedures from routers.ts and db.ts
+- [x] Build unified Explore page (ExplorePage.tsx) with category grid + keyword search
+- [x] Redirect /topics and /topics/:category to /explore?category=X
+- [x] Update AppLayout.tsx nav: remove Topics, Search, Notes — add Explore
+- [x] Update App.tsx routes: /search and /topics/* redirect to /explore

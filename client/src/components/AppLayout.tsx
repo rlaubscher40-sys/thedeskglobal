@@ -8,9 +8,7 @@ import {
   Newspaper,
   BookOpen,
   Bookmark,
-  StickyNote,
-  Search,
-  Hash,
+  Compass,
   BarChart3,
   PanelLeftClose,
   PanelLeftOpen,
@@ -40,10 +38,8 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/", label: "Today", icon: Newspaper },
   { path: "/editions", label: "Editions", icon: BookOpen },
   { path: "/trends", label: "Trends", icon: BarChart3 },
-  { path: "/topics", label: "Topics", icon: Hash },
   { path: "/queue", label: "Reading Queue", icon: Bookmark },
-  { path: "/notes", label: "Notes", icon: StickyNote, requiresAuth: true },
-  { path: "/search", label: "Search", icon: Search },
+  { path: "/explore", label: "Explore", icon: Compass },
   { path: "/about", label: "About", icon: Info },
   { path: "/admin", label: "Admin", icon: ShieldAlert, requiresAuth: true },
 ];
@@ -629,8 +625,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             { path: "/", label: "Today", icon: Newspaper },
             { path: "/editions", label: "Editions", icon: BookOpen },
             { path: "/queue", label: "Queue", icon: Bookmark },
-            { path: "/notes", label: "Notes", icon: StickyNote },
-            { path: "/search", label: "Search", icon: Search },
+            { path: "/explore", label: "Explore", icon: Compass },
           ].map((item) => {
             const isActive = location === item.path ||
               (item.path !== "/" && location.startsWith(item.path));

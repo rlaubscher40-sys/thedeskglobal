@@ -1,17 +1,15 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch, useLocation } from "wouter";
+import { Route, Switch, useLocation, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import AppLayout from "./components/AppLayout";
 import DailyFeed from "./pages/DailyFeed";
 import Editions from "./pages/Editions";
 import ReadingQueue from "./pages/ReadingQueue";
-import Notes from "./pages/Notes";
 import ConversationTracker from "./pages/ConversationTracker";
-import SearchPage from "./pages/SearchPage";
-import TopicThreads from "./pages/TopicThreads";
+import ExplorePage from "./pages/ExplorePage";
 import WeeklyComparison from "./pages/WeeklyComparison";
 import About from "./pages/About";
 import StoryPage from "./pages/StoryPage";
@@ -40,12 +38,11 @@ function KeyboardShortcuts() {
   const [, navigate] = useLocation();
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      // Ignore when typing in inputs
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === "/") {
         e.preventDefault();
-        navigate("/search");
+        navigate("/explore");
       }
     };
     window.addEventListener("keydown", handler);
@@ -56,7 +53,6 @@ function KeyboardShortcuts() {
 
 function RouteContent() {
   const [location] = useLocation();
-  // Respect prefers-reduced-motion
   const prefersReduced = typeof window !== "undefined"
     && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   return (
@@ -73,14 +69,18 @@ function RouteContent() {
           <Route path={"/"} component={DailyFeed} />
           <Route path={"/editions"} component={Editions} />
           <Route path={"/queue"} component={ReadingQueue} />
-          <Route path={"/notes"} component={Notes} />
           {/* /tracker is the canonical route; /conversations is an alias */}
           <Route path={"/tracker"} component={ConversationTracker} />
           <Route path={"/conversations"} component={ConversationTracker} />
-          <Route path={"/search"} component={SearchPage} />
+          {/* Unified Explore page replaces /search and /topics */}
+          <Route path={"/explore"} component={ExplorePage} />
+          <Route path={"/explore/:category"} component={ExplorePage} />
+          {/* Legacy redirects */}
+          <Route path={"/search"}><Redirect to="/explore" /></Route>
+          <Route path={"/topics"}><Redirect to="/explore" /></Route>
+          <Route path={"/topics/:category"}>{(params) => <Redirect to={`/explore/${params.category}`} />}</Route>
+          <Route path={"/notes"}><Redirect to="/" /></Route>
           <Route path={"/trends"} component={WeeklyComparison} />
-          <Route path={"/topics"} component={TopicThreads} />
-          <Route path={"/topics/:category"} component={TopicThreads} />
           <Route path={"/about"} component={About} />
           <Route path={"/admin"} component={AdminDashboard} />
           <Route path={"/story/:id"} component={StoryPage} />
