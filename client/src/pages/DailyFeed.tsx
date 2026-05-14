@@ -557,64 +557,101 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
 
   const displayMetrics = useMemo(() => {
     if (!keyMetrics || Object.keys(keyMetrics).length === 0) return [];
-    return Object.entries(keyMetrics).slice(0, 5);
+    return Object.entries(keyMetrics).slice(0, 9);
   }, [keyMetrics]);
 
   return (
     <div className="space-y-4">
-      {/* Key Metrics */}
+      {/* Key Metrics — reference design: 3-col grid, large value, trend arrow, sparkline */}
       {displayMetrics.length > 0 && (
         <div
           style={{
-            padding: "16px",
+            padding: "20px",
             borderRadius: "14px",
-            background: "rgba(13, 15, 26, 0.75)",
+            background: "rgba(13, 15, 26, 0.85)",
             backdropFilter: "blur(16px)",
             WebkitBackdropFilter: "blur(16px)",
             border: "1px solid rgba(255,255,255,0.07)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
         >
-          <div className="flex items-center gap-2 mb-3.5">
-            <BarChart3 className="w-3.5 h-3.5 text-amber-500" />
-            <span className="text-[10px] font-semibold text-amber-500/80 tracking-wider uppercase">
-              Key Metrics
-            </span>
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-3.5 h-3.5 text-amber-500" />
+              <span className="text-[10px] font-semibold text-amber-500/80 tracking-[0.12em] uppercase">
+                Key Metrics
+              </span>
+            </div>
+            {latestEdition && (
+              <span className="text-[9px] text-white/25 tracking-wider uppercase">
+                vs previous edition
+              </span>
+            )}
           </div>
-          <div className="space-y-3">
+          {/* 3-column metric grid */}
+          <div className="grid grid-cols-2 xl:grid-cols-3 gap-px" style={{ background: "rgba(255,255,255,0.04)", borderRadius: "10px", overflow: "hidden" }}>
             {displayMetrics.map(([key, value]) => {
               const trend = getMetricTrend(key);
-              return (
-                <div key={key} className="flex items-center justify-between gap-2">
-                  <span className="text-[11px] text-muted-foreground truncate flex-1">
+              const prevVal = prevMetrics?.[key];
+              const trendColour = getTrendColour(key, trend);
+              const tip = (trend === "up" || trend === "down") ? getMetricTooltip(key, trend) : null;
+              const barColour = trend === "up"
+                ? (trendColour.includes("emerald") ? "#34d399" : "#f87171")
+                : trend === "down"
+                  ? (trendColour.includes("emerald") ? "#34d399" : "#f87171")
+                  : "#f59e0b";
+              const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus;
+              const tileContent = (
+                <div
+                  key={key}
+                  style={{ background: "rgba(13,15,26,0.9)", padding: "14px 16px 0 16px" }}
+                  className="flex flex-col"
+                >
+                  {/* Label */}
+                  <span className="text-[10px] font-mono text-white/40 tracking-[0.08em] uppercase truncate mb-1.5">
                     {key}
                   </span>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-xs font-mono font-medium text-foreground">
-                      <AnimatedCounter value={value} />
+                  {/* Value + trend arrow */}
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xl font-bold text-white leading-none tracking-tight">
+                      {value}
                     </span>
-                    {(trend === "up" || trend === "down") ? (() => {
-                      const tip = getMetricTooltip(key, trend);
-                      const icon = trend === "up"
-                        ? <TrendingUp className={`w-3 h-3 ${getTrendColour(key, trend)}`} />
-                        : <TrendingDown className={`w-3 h-3 ${getTrendColour(key, trend)}`} />;
-                      return tip ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild><span className="cursor-help">{icon}</span></TooltipTrigger>
-                          <TooltipContent side="left" className="max-w-[200px] text-[11px] leading-snug bg-[rgba(10,12,24,0.97)] text-[rgba(245,238,220,0.9)] border border-white/10 px-3 py-2 rounded-lg shadow-xl">
-                            {tip}
-                          </TooltipContent>
-                        </Tooltip>
-                      ) : icon;
-                    })() : trend === "flat" && <Minus className="w-3 h-3 text-muted-foreground/40" />}
+                    {trend && trend !== "flat" && (
+                      <TrendIcon className={`w-4 h-4 shrink-0 ${trendColour}`} />
+                    )}
+                    {trend === "flat" && (
+                      <Minus className="w-3.5 h-3.5 shrink-0 text-amber-400/50" />
+                    )}
+                  </div>
+                  {/* Previous value */}
+                  {prevVal !== undefined && (
+                    <span className="text-[10px] text-white/30 mb-3">
+                      was {prevVal}
+                    </span>
+                  )}
+                  {!prevVal && <div className="mb-3" />}
+                  {/* Sparkline bar */}
+                  <div style={{ height: "2px", background: "rgba(255,255,255,0.06)", marginLeft: "-16px", marginRight: "-16px" }}>
+                    <div style={{ height: "2px", width: trend === "flat" || !trend ? "50%" : trend === "up" ? "75%" : "30%", background: barColour, transition: "width 0.8s cubic-bezier(0.23,1,0.32,1)" }} />
                   </div>
                 </div>
               );
+              return tip ? (
+                <Tooltip key={key}>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-help">{tileContent}</div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[220px] text-[11px] leading-snug bg-[rgba(10,12,24,0.97)] text-[rgba(245,238,220,0.9)] border border-white/10 px-3 py-2 rounded-lg shadow-xl">
+                    {tip}
+                  </TooltipContent>
+                </Tooltip>
+              ) : tileContent;
             })}
           </div>
           {latestEdition && (
             <Link href="/editions">
-              <p className="text-[10px] text-amber-500/60 hover:text-amber-400 mt-3.5 cursor-pointer transition-colors">
+              <p className="text-[9px] text-amber-500/40 hover:text-amber-400 mt-3 cursor-pointer transition-colors tracking-wider uppercase">
                 Edition {latestEdition.editionNumber} &middot; {latestEdition.weekOf}
               </p>
             </Link>

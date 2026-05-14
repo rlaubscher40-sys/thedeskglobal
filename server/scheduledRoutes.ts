@@ -238,15 +238,49 @@ function sanitizeText(text: string | null | undefined): string | null {
  * (> 60 chars) because those are descriptions, not numeric metrics. Logs a warning
  * for each stripped entry so the scheduled task author can fix the upstream payload.
  */
+/**
+ * Extract a clean short value from a long-text metric sentence.
+ * Priority order:
+ *   1. Currency + number: US$120.36/bbl, A$1.2M, $4.35%
+ *   2. Percentage: 4.35%, -0.5%
+ *   3. Number + unit: 104 mb/d, 420 kb/d, 8 cases, 3 deaths
+ *   4. Plain number: 1.5, 120
+ *   5. Fallback: first 30 chars of the string
+ */
+function extractMetricValue(text: string): string {
+  // Currency with number (e.g. US$120.36/bbl, A$1.2M, $4.35%)
+  const currencyMatch = text.match(/(?:US|A|AU)?\$[\d,.]+(?:\/[a-zA-Z]+)?%?/);
+  if (currencyMatch) return currencyMatch[0];
+  // Percentage (e.g. 4.35%, -0.5%)
+  const pctMatch = text.match(/-?[\d,.]+%/);
+  if (pctMatch) return pctMatch[0];
+  // Number with unit (e.g. 104 mb/d, 420 kb/d, 8 cases)
+  const numUnitMatch = text.match(/[\d,.]+\s*(?:mb\/d|kb\/d|bbl|cases|deaths|pts?|bps?|pp|x|X)/);
+  if (numUnitMatch) return numUnitMatch[0].trim();
+  // Plain number (e.g. 1.5, 120)
+  const numMatch = text.match(/-?[\d,.]+(?:\.[\d]+)?/);
+  if (numMatch) return numMatch[0];
+  // Fallback: first 28 chars
+  return text.slice(0, 28).trim();
+}
+
 function sanitiseKeyMetrics(raw: Record<string, any> | null | undefined): Record<string, any> | null {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return raw ?? null;
+  // If already in array format [{label, value, ...}], pass through
+  if (Array.isArray(raw)) return raw;
   const cleaned: Record<string, any> = {};
   for (const [key, value] of Object.entries(raw)) {
     if (typeof value === 'string' && value.length > 60) {
-      console.warn(`[Ingest] Stripped long-text metric value for key "${key}" (${value.length} chars): "${value.slice(0, 80)}..."`);
-      continue;
+      // Extract a clean short value and preserve the full text as a note
+      const extracted = extractMetricValue(value);
+      console.warn(`[Ingest] Long-text metric "${key}" — extracted value: "${extracted}" from: "${value.slice(0, 80)}..."`);
+      cleaned[key] = { value: extracted, note: value };
+    } else if (typeof value === 'object' && value !== null && 'value' in value) {
+      // Already structured {value, note, trend, ...} — pass through
+      cleaned[key] = value;
+    } else {
+      cleaned[key] = value;
     }
-    cleaned[key] = value;
   }
   return Object.keys(cleaned).length > 0 ? cleaned : null;
 }

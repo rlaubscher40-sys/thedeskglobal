@@ -36,7 +36,6 @@ export function normaliseKeyMetrics(
   if (Array.isArray(raw)) {
     const result: Record<string, string> = {};
     for (const item of raw as MetricItem[]) {
-      // Skip blank labels -- they would produce empty-string React keys
       if (item && typeof item.label === "string" && item.label.trim() !== "" && item.value !== undefined) {
         result[item.label] = String(item.value);
       }
@@ -44,12 +43,15 @@ export function normaliseKeyMetrics(
     return result;
   }
 
-  // Flat object format: {key: value}
+  // Flat object format: {key: value} or {key: {value, note, trend}}
   if (typeof raw === "object") {
     const result: Record<string, string> = {};
     for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
-      // Guard: skip blank keys and object values (would cause React render crash)
-      if (k.trim() !== "" && v !== null && typeof v !== "object") {
+      if (k.trim() === "") continue;
+      if (v !== null && typeof v === "object" && "value" in (v as object)) {
+        // Structured {value, note, trend} from server sanitiser
+        result[k] = String((v as any).value);
+      } else if (v !== null && typeof v !== "object") {
         result[k] = String(v);
       }
     }
@@ -199,8 +201,24 @@ export function normaliseKeyMetricsItems(raw: unknown): MetricItem[] {
 
   if (typeof raw === "object") {
     return Object.entries(raw as Record<string, unknown>)
-      .filter(([k, v]) => k.trim() !== "" && v !== null && typeof v !== "object")
-      .map(([label, value]) => ({ label, value: String(value) }));
+      .filter(([k]) => k.trim() !== "")
+      .map(([label, v]) => {
+        if (v !== null && typeof v === "object" && "value" in (v as object)) {
+          // Structured {value, note, trend} from server sanitiser
+          const structured = v as { value: string; note?: string; trend?: string };
+          return {
+            label,
+            value: String(structured.value),
+            note: structured.note,
+            trend: (structured.trend as MetricItem["trend"]) ?? undefined,
+          };
+        }
+        if (v !== null && typeof v !== "object") {
+          return { label, value: String(v) };
+        }
+        return null;
+      })
+      .filter(Boolean) as MetricItem[];
   }
 
   return [];

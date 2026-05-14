@@ -770,15 +770,14 @@ export default function Editions() {
               if (/china|us |europe|global|geopolit|war|conflict|sanction|tariff|nato|\bun\b|imf|world bank|russia|ukraine|middle east|israel|iran/.test(t)) return "GEOPOLITICS";
               return "OTHER";
             }
-            const grouped: Record<string, { meta: typeof CAT_META[string]; items: { signal: string; idx: number }[] }> = {};
-            signals.forEach((signal, i) => {
-              // Normalise TECH -> AI to avoid duplicate catKey collision (both share same label/style)
+            // Build flat list with meta for each signal
+            const flatSignals = signals.map((signal, idx) => {
               const rawKey = detectSignalCategory(signal);
               const catKey = rawKey === "TECH" ? "AI" : rawKey;
               const meta = CAT_META[catKey] || { label: catKey, borderColor: "rgba(255,255,255,0.1)", dotClass: "bg-white/30", bgClass: "bg-white/[0.03]", headerColor: "rgba(255,255,255,0.5)" };
-              if (!grouped[catKey]) grouped[catKey] = { meta, items: [] };
-              grouped[catKey].items.push({ signal, idx: i });
+              return { signal, idx, catKey, meta };
             });
+            const uniqueCats = Array.from(new Set(flatSignals.map(s => s.catKey))).length;
             return (
               <div
                 className="rounded-xl overflow-hidden"
@@ -795,63 +794,57 @@ export default function Editions() {
                   <h3 className="font-mono text-[11px] text-muted-foreground/80 tracking-[0.2em] uppercase">
                     Key Signals
                   </h3>
-                  <p className="text-[11px] text-muted-foreground/50 mt-0.5">{signals.length} signals across {Object.keys(grouped).length} categories</p>
+                  <p className="text-[11px] text-muted-foreground/50 mt-0.5">{signals.length} signals across {uniqueCats} categories</p>
                 </div>
-                {/* Category groups — compact grid layout */}
-                <div className="p-5 space-y-5">
-                  {Object.entries(grouped).map(([catKey, group]) => (
-                    <div key={catKey}>
-                      {/* Category header */}
-                      <div className="flex items-center gap-2 mb-2.5">
-                        <div className={`w-2 h-2 rounded-full ${group.meta.dotClass} shrink-0`} />
-                        <span
-                          className="font-mono text-[10px] tracking-[0.2em] uppercase font-semibold"
-                          style={{ color: group.meta.headerColor }}
-                        >
-                          {group.meta.label}
-                        </span>
-                        <div className="h-px flex-1" style={{ background: `${group.meta.borderColor}` }} />
-                        <span className="font-mono text-[9px] text-muted-foreground/40">{group.items.length}</span>
-                      </div>
-                      {/* Signals grid — 1 col mobile, 2 col tablet, 3 col desktop */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
-                        {group.items.map(({ signal, idx }) => {
-                          const isSaved = bookmarked.has(signal);
-                          return (
-                            <div
-                              key={idx}
-                              className="flex items-start gap-3 px-3 py-2.5 rounded-lg"
-                              style={{
-                                background: "rgba(255,255,255,0.02)",
-                                borderLeft: `2px solid ${group.meta.borderColor}`,
-                              }}
+                {/* Flat masonry grid — category badge on each card */}
+                <div className="p-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5">
+                  {flatSignals.map(({ signal, idx, meta }) => {
+                    const isSaved = bookmarked.has(signal);
+                    return (
+                      <div
+                        key={idx}
+                        className="flex flex-col gap-2 px-3 py-2.5 rounded-lg"
+                        style={{
+                          background: "rgba(255,255,255,0.02)",
+                          borderLeft: `2px solid ${meta.borderColor}`,
+                        }}
+                      >
+                        {/* Category badge row */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <div className={`w-1.5 h-1.5 rounded-full ${meta.dotClass} shrink-0`} />
+                            <span
+                              className="font-mono text-[9px] tracking-[0.18em] uppercase font-semibold"
+                              style={{ color: meta.headerColor }}
                             >
-                              <p className="text-[12px] text-muted-foreground/80 flex-1 leading-relaxed">
-                                {signal}
-                              </p>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleBookmark(signal, `Signal from Edition #${selected?.editionNumber}`);
-                                }}
-                                disabled={isSaved}
-                                title={isSaved ? "Saved" : "Save to Reading Queue"}
-                                className={`transition-colors shrink-0 mt-0.5 ${
-                                  isSaved ? "text-amber-400" : "text-muted-foreground/30 hover:text-amber-400"
-                                }`}
-                              >
-                                {isSaved ? (
-                                  <BookmarkCheck className="w-3.5 h-3.5" />
-                                ) : (
-                                  <Bookmark className="w-3.5 h-3.5" />
-                                )}
-                              </button>
-                            </div>
-                          );
-                        })}
+                              {meta.label}
+                            </span>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBookmark(signal, `Signal from Edition #${selected?.editionNumber}`);
+                            }}
+                            disabled={isSaved}
+                            title={isSaved ? "Saved" : "Save to Reading Queue"}
+                            className={`transition-colors shrink-0 ${
+                              isSaved ? "text-amber-400" : "text-muted-foreground/30 hover:text-amber-400"
+                            }`}
+                          >
+                            {isSaved ? (
+                              <BookmarkCheck className="w-3 h-3" />
+                            ) : (
+                              <Bookmark className="w-3 h-3" />
+                            )}
+                          </button>
+                        </div>
+                        {/* Signal text */}
+                        <p className="text-[12px] text-muted-foreground/80 leading-relaxed">
+                          {signal}
+                        </p>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );
