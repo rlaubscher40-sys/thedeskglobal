@@ -5,20 +5,33 @@ import { useState, useMemo } from "react";
 import { Link } from "wouter";
 
 const CATEGORY_COLORS: Record<string, { pill: string; accent: string }> = {
-  MACRO:      { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",   accent: "rgba(245,166,35,0.7)" },
-  PROPERTY:   { pill: "text-emerald-400 bg-emerald-500/10 border-emerald-500/25", accent: "rgba(52,211,153,0.7)" },
-  TECH:       { pill: "text-blue-400 bg-blue-500/10 border-blue-500/25",       accent: "rgba(96,165,250,0.7)" },
-  POLICY:     { pill: "text-purple-400 bg-purple-500/10 border-purple-500/25", accent: "rgba(167,139,250,0.7)" },
-  SCIENCE:    { pill: "text-rose-400 bg-rose-500/10 border-rose-500/25",       accent: "rgba(251,113,133,0.7)" },
-  MARKETS:    { pill: "text-orange-400 bg-orange-500/10 border-orange-500/25", accent: "rgba(251,146,60,0.7)" },
-  ECONOMICS:  { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",   accent: "rgba(245,166,35,0.7)" },
-  AI:         { pill: "text-blue-400 bg-blue-500/10 border-blue-500/25",       accent: "rgba(96,165,250,0.7)" },
+  MACRO:               { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",    accent: "rgba(245,166,35,0.7)" },
+  PROPERTY:            { pill: "text-emerald-400 bg-emerald-500/10 border-emerald-500/25", accent: "rgba(52,211,153,0.7)" },
+  TECH:                { pill: "text-blue-400 bg-blue-500/10 border-blue-500/25",        accent: "rgba(96,165,250,0.7)" },
+  AI:                  { pill: "text-cyan-400 bg-cyan-500/10 border-cyan-500/25",        accent: "rgba(34,211,238,0.7)" },
+  POLICY:              { pill: "text-purple-400 bg-purple-500/10 border-purple-500/25",  accent: "rgba(167,139,250,0.7)" },
+  SCIENCE:             { pill: "text-rose-400 bg-rose-500/10 border-rose-500/25",        accent: "rgba(251,113,133,0.7)" },
+  MARKETS:             { pill: "text-orange-400 bg-orange-500/10 border-orange-500/25",  accent: "rgba(251,146,60,0.7)" },
+  ECONOMICS:           { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",    accent: "rgba(245,166,35,0.7)" },
+  GEOPOLITICS:         { pill: "text-red-400 bg-red-500/10 border-red-500/25",           accent: "rgba(248,113,113,0.7)" },
+  CULTURE:             { pill: "text-pink-400 bg-pink-500/10 border-pink-500/25",        accent: "rgba(244,114,182,0.7)" },
+  SPORT:               { pill: "text-lime-400 bg-lime-500/10 border-lime-500/25",        accent: "rgba(163,230,53,0.7)" },
+  SPORTS:              { pill: "text-lime-400 bg-lime-500/10 border-lime-500/25",        accent: "rgba(163,230,53,0.7)" },
+  "GLOBAL PUBLIC PULSE": { pill: "text-violet-400 bg-violet-500/10 border-violet-500/25", accent: "rgba(139,92,246,0.7)" },
+  CRYPTO:              { pill: "text-yellow-400 bg-yellow-500/10 border-yellow-500/25",  accent: "rgba(250,204,21,0.7)" },
+  HEALTH:              { pill: "text-teal-400 bg-teal-500/10 border-teal-500/25",        accent: "rgba(45,212,191,0.7)" },
+  CLIMATE:             { pill: "text-green-400 bg-green-500/10 border-green-500/25",     accent: "rgba(74,222,128,0.7)" },
+  OTHER:               { pill: "text-slate-400 bg-slate-500/10 border-slate-500/25",     accent: "rgba(148,163,184,0.7)" },
 };
 
-const TOPIC_FILTERS = ["ALL", "MACRO", "PROPERTY", "TECH", "POLICY", "MARKETS"];
+const TOPIC_FILTERS = [
+  "ALL", "PROPERTY", "MACRO", "MARKETS", "AI", "POLICY", "SCIENCE", "TECH",
+  "GEOPOLITICS", "CULTURE", "SPORT", "GLOBAL PUBLIC PULSE", "CRYPTO", "HEALTH", "CLIMATE",
+];
 
 function getCatStyle(raw: string) {
-  const key = raw?.toUpperCase().split(" ")[0] || "";
+  // Preserve multi-word categories instead of splitting on space
+  const key = raw?.toUpperCase() || "";
   return CATEGORY_COLORS[key] || { pill: "text-white/40 bg-white/[0.04] border-white/[0.08]", accent: "rgba(245,238,220,0.2)" };
 }
 
@@ -213,13 +226,33 @@ export default function SearchPage() {
       </form>
 
       {/* Category filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div
+        className="flex gap-2 mb-6 overflow-x-auto pb-1"
+        style={{ scrollbarWidth: "none" }}
+        role="tablist"
+        aria-label="Filter by category"
+      >
         {TOPIC_FILTERS.map((filter) => {
           const isActive = activeFilter === filter;
+          const cs = filter === "ALL" ? null : getCatStyle(filter);
+          // Extract the Tailwind colour classes from the pill string for active state
+          const pillClasses = cs?.pill || "";
+          const textClass = pillClasses.split(" ")[0] || "text-amber-400";
+          const bgClass = pillClasses.split(" ")[1] || "bg-amber-500/10";
+          const borderClass = pillClasses.split(" ")[2] || "border-amber-500/25";
           return (
             <button
               key={filter}
+              role="tab"
+              aria-selected={isActive}
               onClick={() => setActiveFilter(filter)}
+              className={`flex-none transition-all duration-200 active:scale-95 ${
+                isActive
+                  ? filter === "ALL"
+                    ? "bg-amber-500/10 text-amber-400 border-amber-500/25"
+                    : `${bgClass} ${textClass} ${borderClass}`
+                  : "bg-transparent text-white/35 border-white/10 hover:text-white/60 hover:border-white/20"
+              }`}
               style={{
                 padding: "5px 13px",
                 fontSize: "9px",
@@ -228,23 +261,8 @@ export default function SearchPage() {
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 borderRadius: "999px",
-                border: isActive ? "1px solid rgba(245,166,35,0.4)" : "1px solid rgba(255,255,255,0.07)",
-                background: isActive ? "rgba(245,166,35,0.1)" : "rgba(255,255,255,0.025)",
-                color: isActive ? "rgba(245,166,35,0.95)" : "rgba(245,238,220,0.38)",
+                border: "1px solid",
                 cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-              onMouseEnter={e => {
-                if (!isActive) {
-                  e.currentTarget.style.color = "rgba(245,238,220,0.65)";
-                  e.currentTarget.style.borderColor = "rgba(245,238,220,0.14)";
-                }
-              }}
-              onMouseLeave={e => {
-                if (!isActive) {
-                  e.currentTarget.style.color = "rgba(245,238,220,0.38)";
-                  e.currentTarget.style.borderColor = "rgba(245,238,220,0.07)";
-                }
               }}
             >
               {filter}

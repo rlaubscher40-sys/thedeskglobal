@@ -7,25 +7,38 @@ import { useState, useRef, useEffect } from "react";
 import { PersonaSelector, parsePersonaTag, usePersona, type Persona } from "@/components/PersonaSelector";
 
 const CATEGORY_COLORS: Record<string, { pill: string; accent: string; border: string }> = {
-  MACRO:      { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",   accent: "rgba(245,166,35,0.85)",  border: "rgba(245,166,35,0.7)" },
-  PROPERTY:   { pill: "text-emerald-400 bg-emerald-500/10 border-emerald-500/25", accent: "rgba(52,211,153,0.85)", border: "rgba(52,211,153,0.7)" },
-  TECH:       { pill: "text-blue-400 bg-blue-500/10 border-blue-500/25",       accent: "rgba(96,165,250,0.85)",  border: "rgba(96,165,250,0.7)" },
-  POLICY:     { pill: "text-purple-400 bg-purple-500/10 border-purple-500/25", accent: "rgba(167,139,250,0.85)", border: "rgba(167,139,250,0.7)" },
-  SCIENCE:    { pill: "text-rose-400 bg-rose-500/10 border-rose-500/25",       accent: "rgba(251,113,133,0.85)", border: "rgba(251,113,133,0.7)" },
-  MARKETS:    { pill: "text-orange-400 bg-orange-500/10 border-orange-500/25", accent: "rgba(251,146,60,0.85)",  border: "rgba(251,146,60,0.7)" },
-  ECONOMICS:  { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",   accent: "rgba(245,166,35,0.85)",  border: "rgba(245,166,35,0.7)" },
-  AI:         { pill: "text-blue-400 bg-blue-500/10 border-blue-500/25",       accent: "rgba(96,165,250,0.85)",  border: "rgba(96,165,250,0.7)" },
+  MACRO:               { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",    accent: "rgba(245,166,35,0.85)",   border: "rgba(245,166,35,0.7)" },
+  PROPERTY:            { pill: "text-emerald-400 bg-emerald-500/10 border-emerald-500/25", accent: "rgba(52,211,153,0.85)",  border: "rgba(52,211,153,0.7)" },
+  TECH:                { pill: "text-blue-400 bg-blue-500/10 border-blue-500/25",        accent: "rgba(96,165,250,0.85)",   border: "rgba(96,165,250,0.7)" },
+  AI:                  { pill: "text-cyan-400 bg-cyan-500/10 border-cyan-500/25",        accent: "rgba(34,211,238,0.85)",   border: "rgba(34,211,238,0.7)" },
+  POLICY:              { pill: "text-purple-400 bg-purple-500/10 border-purple-500/25",  accent: "rgba(167,139,250,0.85)",  border: "rgba(167,139,250,0.7)" },
+  SCIENCE:             { pill: "text-rose-400 bg-rose-500/10 border-rose-500/25",        accent: "rgba(251,113,133,0.85)",  border: "rgba(251,113,133,0.7)" },
+  MARKETS:             { pill: "text-orange-400 bg-orange-500/10 border-orange-500/25",  accent: "rgba(251,146,60,0.85)",   border: "rgba(251,146,60,0.7)" },
+  ECONOMICS:           { pill: "text-amber-400 bg-amber-500/10 border-amber-500/25",    accent: "rgba(245,166,35,0.85)",   border: "rgba(245,166,35,0.7)" },
+  GEOPOLITICS:         { pill: "text-red-400 bg-red-500/10 border-red-500/25",           accent: "rgba(248,113,113,0.85)",  border: "rgba(248,113,113,0.7)" },
+  CULTURE:             { pill: "text-pink-400 bg-pink-500/10 border-pink-500/25",        accent: "rgba(244,114,182,0.85)",  border: "rgba(244,114,182,0.7)" },
+  SPORT:               { pill: "text-lime-400 bg-lime-500/10 border-lime-500/25",        accent: "rgba(163,230,53,0.85)",   border: "rgba(163,230,53,0.7)" },
+  SPORTS:              { pill: "text-lime-400 bg-lime-500/10 border-lime-500/25",        accent: "rgba(163,230,53,0.85)",   border: "rgba(163,230,53,0.7)" },
+  "GLOBAL PUBLIC PULSE": { pill: "text-violet-400 bg-violet-500/10 border-violet-500/25", accent: "rgba(139,92,246,0.85)",  border: "rgba(139,92,246,0.7)" },
+  CRYPTO:              { pill: "text-yellow-400 bg-yellow-500/10 border-yellow-500/25",  accent: "rgba(250,204,21,0.85)",   border: "rgba(250,204,21,0.7)" },
+  HEALTH:              { pill: "text-teal-400 bg-teal-500/10 border-teal-500/25",        accent: "rgba(45,212,191,0.85)",   border: "rgba(45,212,191,0.7)" },
+  CLIMATE:             { pill: "text-green-400 bg-green-500/10 border-green-500/25",     accent: "rgba(74,222,128,0.85)",   border: "rgba(74,222,128,0.7)" },
+  OTHER:               { pill: "text-slate-400 bg-slate-500/10 border-slate-500/25",     accent: "rgba(148,163,184,0.85)",  border: "rgba(148,163,184,0.7)" },
 };
 
 function normaliseCat(raw: string): string {
+  // Explicit alias map for legacy labels
   const map: Record<string, string> = {
-    "Property Market": "PROPERTY",
-    "Macro & Economy": "MACRO",
+    "Property Market":    "PROPERTY",
+    "Macro & Economy":    "MACRO",
     "Policy & Regulation": "POLICY",
-    "Finance & Lending": "MARKETS",
+    "Finance & Lending":  "MARKETS",
     "Lifestyle & Wealth": "MACRO",
+    "Global Public Pulse": "GLOBAL PUBLIC PULSE",
+    "GLOBAL PUBLIC PULSE": "GLOBAL PUBLIC PULSE",
   };
-  return map[raw] || raw.toUpperCase().split(" ")[0];
+  const upper = raw?.toUpperCase() || "";
+  return map[raw] || map[upper] || upper;
 }
 
 function getCatStyle(raw: string) {

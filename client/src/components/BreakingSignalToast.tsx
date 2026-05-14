@@ -46,12 +46,25 @@ export function BreakingSignalToast({ headline, category, feedDate, enabled }: B
       }
 
       const cat = category?.toUpperCase() || "SIGNAL";
-      const catColor =
-        cat === "MACRO" ? "#f59e0b" :
-        cat === "PROPERTY" ? "#10b981" :
-        cat === "TECH" ? "#3b82f6" :
-        cat === "POLICY" ? "#a855f7" :
-        "#f5a623";
+      const CAT_COLORS: Record<string, string> = {
+        MACRO: "#f59e0b",
+        PROPERTY: "#10b981",
+        TECH: "#3b82f6",
+        AI: "#06b6d4",
+        POLICY: "#a855f7",
+        SCIENCE: "#f43f5e",
+        MARKETS: "#f97316",
+        GEOPOLITICS: "#ef4444",
+        CULTURE: "#ec4899",
+        SPORT: "#84cc16",
+        SPORTS: "#84cc16",
+        "GLOBAL PUBLIC PULSE": "#8b5cf6",
+        CRYPTO: "#eab308",
+        HEALTH: "#14b8a6",
+        CLIMATE: "#22c55e",
+        OTHER: "#94a3b8",
+      };
+      const catColor = CAT_COLORS[cat] || "#f5a623";
 
       toast.custom(
         (toastId) => (

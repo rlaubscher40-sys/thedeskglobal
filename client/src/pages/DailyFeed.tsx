@@ -927,6 +927,31 @@ export default function DailyFeed() {
 
   const topItem = items?.[0];
 
+  // ── Category filter state ──────────────────────────────────────────────────
+  const [activeCategory, setActiveCategory] = useState<string>("ALL");
+
+  // Derive the ordered list of categories present in today's items
+  const presentCategories = useMemo(() => {
+    if (!items) return [];
+    const seen = new Set<string>();
+    const ordered: string[] = [];
+    items.forEach((item) => {
+      const cat = item.category?.toUpperCase() || "OTHER";
+      if (!seen.has(cat)) { seen.add(cat); ordered.push(cat); }
+    });
+    return ordered;
+  }, [items]);
+
+  // Reset filter when date changes
+  useEffect(() => { setActiveCategory("ALL"); }, [selectedDate]);
+
+  // Filtered items (ALL = no filter)
+  const filteredItems = useMemo(() => {
+    if (!items) return [];
+    if (activeCategory === "ALL") return items;
+    return items.filter((item) => (item.category?.toUpperCase() || "OTHER") === activeCategory);
+  }, [items, activeCategory]);
+
   return (
     <>
     <BreakingSignalToast
@@ -1253,6 +1278,41 @@ export default function DailyFeed() {
           </div>
         )}
 
+        {/* ── Category filter bar ── */}
+        {!isLoading && items && items.length > 0 && presentCategories.length > 1 && (
+          <div
+            className="flex items-center gap-2 mb-6 overflow-x-auto pb-1"
+            style={{ scrollbarWidth: "none" }}
+            role="tablist"
+            aria-label="Filter by category"
+          >
+            {["ALL", ...presentCategories].map((cat) => {
+              const isActive = activeCategory === cat;
+              const colors = CATEGORY_COLORS[cat];
+              // Extract the text colour class for the active pill
+              const textClass = colors?.split(" ")[1] || "text-white/70";
+              const bgClass = colors?.split(" ")[0] || "bg-white/10";
+              const borderClass = colors?.split(" ")[2] || "border-white/20";
+              return (
+                <button
+                  key={cat}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`flex-none px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase border transition-all duration-200 active:scale-95 ${
+                    isActive
+                      ? `${bgClass} ${textClass} ${borderClass} shadow-sm`
+                      : "bg-transparent border-white/10 text-white/35 hover:text-white/60 hover:border-white/20"
+                  }`}
+                  style={isActive ? { boxShadow: "0 0 12px rgba(255,255,255,0.06)" } : {}}
+                >
+                  {cat === "ALL" ? "All" : cat}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* Feed items */}
         {isLoading && (
           <div className="space-y-4">
@@ -1304,6 +1364,18 @@ export default function DailyFeed() {
           </div>
         )}
 
+        {!isLoading && hasData && filteredItems.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-16 text-center"
+          >
+            <Inbox className="w-10 h-10 text-muted-foreground/25 mb-4" />
+            <p className="text-sm font-medium text-muted-foreground/60 mb-1">No {activeCategory} stories today.</p>
+            <button onClick={() => setActiveCategory("ALL")} className="text-[11px] text-amber-500/60 hover:text-amber-400 transition-colors mt-1">Show all categories</button>
+          </motion.div>
+        )}
+
         {!isLoading && !hasData && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -1320,11 +1392,11 @@ export default function DailyFeed() {
           </motion.div>
         )}
 
-        {!isLoading && items && items.length > 0 && (
+        {!isLoading && filteredItems && filteredItems.length > 0 && (
           <div>
             {/* ─── FEATURED HERO STORY ─── */}
             {(() => {
-              const hero = items[0];
+              const hero = filteredItems[0];
               const personaInsight = parsePersonaTag(hero.partnerTag, persona);
               const heroAccent = CATEGORY_ACCENT[hero.category?.toUpperCase()] || "border-l-amber-500/50";
               return (
@@ -1529,7 +1601,7 @@ export default function DailyFeed() {
             })()}
 
             {/* Remaining cards */}
-            {items.length > 1 && (
+            {filteredItems.length > 1 && (
               <>
                 {/* Section divider */}
                 <div className="flex items-center gap-3 mb-6">
@@ -1538,15 +1610,15 @@ export default function DailyFeed() {
                     className="font-mono uppercase tracking-widest"
                     style={{ fontSize: "8px", color: "rgba(245,166,35,0.45)", letterSpacing: "0.18em" }}
                   >
-                    More from today
+                    {activeCategory === "ALL" ? "More from today" : `More ${activeCategory}`}
                   </span>
                   <div style={{ flex: 1, height: "1px", background: "linear-gradient(270deg, rgba(245,166,35,0.25), rgba(255,255,255,0.05))" }} />
                 </div>
 
                 {/* Medium cards: 2-col grid on md+, single col on mobile */}
-                {items.slice(1, 3).length > 0 && (
+                {filteredItems.slice(1, 3).length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                    {items.slice(1, 3).map((item, i) => {
+                    {filteredItems.slice(1, 3).map((item, i) => {
                       const personaInsight = parsePersonaTag(item.partnerTag, persona);
                       return (
                         <FeedCard
@@ -1565,7 +1637,7 @@ export default function DailyFeed() {
                 )}
 
                 {/* Compact cards below the medium tier */}
-                {items.length > 3 && (
+                {filteredItems.length > 3 && (
                   <>
                     <div className="flex items-center gap-3 mb-5">
                       <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.05)" }} />
@@ -1578,7 +1650,7 @@ export default function DailyFeed() {
                       <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.05)" }} />
                     </div>
                     <div className="space-y-5">
-                      {items.slice(3).map((item, i) => {
+                      {filteredItems.slice(3).map((item, i) => {
                         const personaInsight = parsePersonaTag(item.partnerTag, persona);
                         return (
                           <FeedCard
@@ -1618,7 +1690,7 @@ export default function DailyFeed() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       >
-        <IntelligenceSnapshot items={items || []} />
+        <IntelligenceSnapshot items={filteredItems || []} />
       </motion.aside>
     </div>
     </>
