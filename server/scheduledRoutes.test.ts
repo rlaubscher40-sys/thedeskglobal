@@ -14,6 +14,9 @@ vi.mock("./_core/sdk", () => ({
 vi.mock("./db", () => ({
   createDailyFeedItems: vi.fn().mockResolvedValue(undefined),
   createEdition: vi.fn().mockResolvedValue(undefined),
+  // Deduplication guard helpers -- return empty/null so tests are not blocked by dedup
+  getDailyFeedItems: vi.fn().mockResolvedValue([]),
+  getEditionByNumber: vi.fn().mockResolvedValue(null),
 }));
 
 const TEST_API_KEY = "test-scheduled-api-key-12345";

@@ -338,6 +338,22 @@ export function registerScheduledRoutes(app: Express) {
         return;
       }
 
+      // ── Deduplication guard ──────────────────────────────────────────────────
+      // If items for this feedDate already exist, reject the entire batch to prevent duplicates.
+      const firstDate = items.find((i: any) => i.feedDate)?.feedDate;
+      if (firstDate) {
+        const existing = await db.getDailyFeedItems(firstDate);
+        if (existing && existing.length > 0) {
+          console.warn(`[Ingest] Duplicate rejected: ${existing.length} feed items already exist for ${firstDate}`);
+          res.status(409).json({
+            error: `Feed items for ${firstDate} already exist (${existing.length} items)`,
+            code: "DUPLICATE_FEED_DATE",
+            existingCount: existing.length,
+          });
+          return;
+        }
+      }
+
       // Build valid items, sanitizing text fields
       const validItems: any[] = [];
       const results: ItemValidationResult[] = [];
@@ -456,13 +472,25 @@ export function registerScheduledRoutes(app: Express) {
                   await db.updateDailyFeedItemImageUrl(id, imageUrl);
                   imagesGenerated++;
                 }
-              } catch (imgErr) {
-                console.warn(`[Ingest] Image generation failed for item ${id}:`, imgErr);
+              } catch (imgErr: any) {
+                const imgErrMsg = imgErr?.message || String(imgErr);
+                const isUpstream = imgErrMsg.includes("500") || imgErrMsg.includes("502") || imgErrMsg.includes("503");
+                if (isUpstream) {
+                  console.warn(`[Ingest] Upstream API error generating image for item ${id} (platform issue, not app bug): ${imgErrMsg.slice(0, 120)}`);
+                } else {
+                  console.warn(`[Ingest] Image generation failed for item ${id}:`, imgErrMsg.slice(0, 200));
+                }
               }
             }
             console.log(`[Ingest] Enriched ${enriched} partnerTags (${enrichFailed} failed), ${sayThisEnriched} sayThis lines, ${imagesGenerated} images for ${feedDate}`);
-          } catch (enrichErr) {
-            console.error("[Ingest] Background partnerTag enrichment error:", enrichErr);
+          } catch (enrichErr: any) {
+            const enrichErrMsg = enrichErr?.message || String(enrichErr);
+            const isUpstream = enrichErrMsg.includes("500") || enrichErrMsg.includes("502") || enrichErrMsg.includes("503");
+            if (isUpstream) {
+              console.warn(`[Ingest] Upstream platform API error during background enrichment (not an app bug): ${enrichErrMsg.slice(0, 200)}`);
+            } else {
+              console.error("[Ingest] Background partnerTag enrichment error:", enrichErr);
+            }
           }
         });
       }
@@ -517,6 +545,20 @@ export function registerScheduledRoutes(app: Express) {
       // Validate signals array
       if (!Array.isArray(body.signals) || body.signals.length === 0) {
         res.status(400).json({ error: "signals must be a non-empty array" });
+        return;
+      }
+
+      // ── Deduplication guard ──────────────────────────────────────────────────
+      // Reject if an edition with this editionNumber OR this weekRange already exists.
+      // This prevents the scheduled task from creating duplicates on retry.
+      const existingByNumber = await db.getEditionByNumber(body.editionNumber);
+      if (existingByNumber) {
+        console.warn(`[Ingest] Duplicate rejected: Edition ${body.editionNumber} already exists (id=${existingByNumber.id})`);
+        res.status(409).json({
+          error: `Edition ${body.editionNumber} already exists`,
+          code: "DUPLICATE_EDITION",
+          existingId: existingByNumber.id,
+        });
         return;
       }
 
@@ -608,8 +650,14 @@ export function registerScheduledRoutes(app: Express) {
             await db.updateEditionHeroImage(inserted.id, url);
             console.log(`[Ingest] Hero image auto-generated for Edition ${editionData.editionNumber}`);
           }
-        } catch (imgError) {
-          console.warn(`[Ingest] Hero image auto-generation failed for Edition ${editionData.editionNumber}:`, imgError);
+        } catch (imgError: any) {
+          const imgErrMsg = imgError?.message || String(imgError);
+          const isUpstream = imgErrMsg.includes("500") || imgErrMsg.includes("502") || imgErrMsg.includes("503");
+          if (isUpstream) {
+            console.warn(`[Ingest] Upstream platform API error during Edition ${editionData.editionNumber} enrichment (not an app bug): ${imgErrMsg.slice(0, 200)}`);
+          } else {
+            console.warn(`[Ingest] Hero image auto-generation failed for Edition ${editionData.editionNumber}:`, imgErrMsg.slice(0, 200));
+          }
         }
       });
 

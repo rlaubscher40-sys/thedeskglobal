@@ -1,0 +1,10 @@
+{
+  "query": "\nSELECT id, editionNumber, weekRange, weekOf, publishedAt, LEFT(fullText, 50) as preview\nFROM editions\nORDER BY editionNumber ASC, id ASC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute \nSELECT id, editionNumber, weekRange, weekOf, publishedAt, LEFT(fullText, 50) as preview\nFROM editions\nORDER BY editionNumber ASC, id ASC;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 2: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near \"fullText, 50) as preview",
+    "FROM editions",
+    "ORDER BY editionNumber ASC, id ASC\""
+  ]
+}

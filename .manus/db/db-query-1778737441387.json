@@ -1,0 +1,160 @@
+{
+  "query": "SELECT id, editionNumber, weekRange FROM editions WHERE id > 30140 ORDER BY id ASC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute SELECT id, editionNumber, weekRange FROM editions WHERE id > 30140 ORDER BY id ASC",
+  "rows": [
+    {
+      "id": "30145",
+      "editionNumber": "100",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30146",
+      "editionNumber": "102",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30147",
+      "editionNumber": "106",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30148",
+      "editionNumber": "111",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30149",
+      "editionNumber": "121",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30151",
+      "editionNumber": "122",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30152",
+      "editionNumber": "124",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30153",
+      "editionNumber": "128",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30164",
+      "editionNumber": "200",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30166",
+      "editionNumber": "300",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30167",
+      "editionNumber": "11",
+      "weekRange": "05 Mar - 11 Mar 2026"
+    },
+    {
+      "id": "30168",
+      "editionNumber": "12",
+      "weekRange": "12 Mar - 18 Mar 2026"
+    },
+    {
+      "id": "30169",
+      "editionNumber": "13",
+      "weekRange": "19 Mar - 25 Mar 2026"
+    },
+    {
+      "id": "30170",
+      "editionNumber": "14",
+      "weekRange": "26 Mar - 01 Apr 2026"
+    },
+    {
+      "id": "30171",
+      "editionNumber": "15",
+      "weekRange": "02 Apr - 08 Apr 2026"
+    },
+    {
+      "id": "30172",
+      "editionNumber": "16",
+      "weekRange": "09 Apr - 15 Apr 2026"
+    },
+    {
+      "id": "30173",
+      "editionNumber": "17",
+      "weekRange": "16 Apr - 22 Apr 2026"
+    },
+    {
+      "id": "30174",
+      "editionNumber": "18",
+      "weekRange": "23 Apr - 29 Apr 2026"
+    },
+    {
+      "id": "30175",
+      "editionNumber": "19",
+      "weekRange": "30 Apr - 06 May 2026"
+    },
+    {
+      "id": "30177",
+      "editionNumber": "20",
+      "weekRange": "07 May - 13 May 2026"
+    },
+    {
+      "id": "30187",
+      "editionNumber": "1001",
+      "weekRange": "05 Mar - 11 Mar 2026"
+    },
+    {
+      "id": "30188",
+      "editionNumber": "1002",
+      "weekRange": "12 Mar - 18 Mar 2026"
+    },
+    {
+      "id": "30189",
+      "editionNumber": "1003",
+      "weekRange": "19 Mar - 25 Mar 2026"
+    },
+    {
+      "id": "30190",
+      "editionNumber": "1004",
+      "weekRange": "26 Mar - 01 Apr 2026"
+    },
+    {
+      "id": "30191",
+      "editionNumber": "1005",
+      "weekRange": "02 Apr - 08 Apr 2026"
+    },
+    {
+      "id": "30192",
+      "editionNumber": "1006",
+      "weekRange": "09 Apr - 15 Apr 2026"
+    },
+    {
+      "id": "30193",
+      "editionNumber": "1007",
+      "weekRange": "16 Apr - 22 Apr 2026"
+    },
+    {
+      "id": "30194",
+      "editionNumber": "1008",
+      "weekRange": "23 Apr - 29 Apr 2026"
+    },
+    {
+      "id": "30195",
+      "editionNumber": "1009",
+      "weekRange": "30 Apr - 06 May 2026"
+    },
+    {
+      "id": "30196",
+      "editionNumber": "1010",
+      "weekRange": "07 May - 13 May 2026"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\teditionNumber\tweekRange\n30145\t100\t07 May - 13 May 2026\n30146\t102\t07 May - 13 May 2026\n30147\t106\t07 May - 13 May 2026\n30148\t111\t07 May - 13 May 2026\n30149\t121\t07 May - 13 May 2026\n30151\t122\t07 May - 13 May 2026\n30152\t124\t07 May - 13 May 2026\n30153\t128\t07 May - 13 May 2026\n30164\t200\t07 May - 13 May 2026\n30166\t300\t07 May - 13 May 2026\n30167\t11\t05 Mar - 11 Mar 2026\n30168\t12\t12 Mar - 18 Mar 2026\n30169\t13\t19 Mar - 25 Mar 2026\n30170\t14\t26 Mar - 01 Apr 2026\n30171\t15\t02 Apr - 08 Apr 2026\n30172\t16\t09 Apr - 15 Apr 2026\n30173\t17\t16 Apr - 22 Apr 2026\n30174\t18\t23 Apr - 29 Apr 2026\n30175\t19\t30 Apr - 06 May 2026\n30177\t20\t07 May - 13 May 2026\n30187\t1001\t05 Mar - 11 Mar 2026\n30188\t1002\t12 Mar - 18 Mar 2026\n30189\t1003\t19 Mar - 25 Mar 2026\n30190\t1004\t26 Mar - 01 Apr 2026\n30191\t1005\t02 Apr - 08 Apr 2026\n30192\t1006\t09 Apr - 15 Apr 2026\n30193\t1007\t16 Apr - 22 Apr 2026\n30194\t1008\t23 Apr - 29 Apr 2026\n30195\t1009\t30 Apr - 06 May 2026\n30196\t1010\t07 May - 13 May 2026\n",
+  "stderr": "",
+  "execution_time_ms": 1718
+}

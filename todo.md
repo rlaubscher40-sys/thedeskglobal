@@ -60,15 +60,15 @@
 - [x] Update App.tsx routes: /search and /topics/* redirect to /explore
 
 ## Core Goal Features
-- [ ] Fix duplicate empty-string key errors on /editions page
-- [ ] Fix headshot display in AppLayout sidebar (larger, better crop)
-- [ ] Add subscribers DB table (email, name, confirmedAt, source, premiumAt)
-- [ ] Add subscribe tRPC procedures (subscribe, confirm, unsubscribe)
-- [ ] Add prominent subscribe CTA on homepage hero and story pages
-- [ ] Add inline subscribe form in AppLayout sidebar
-- [ ] Add shareable public story URL (/story/:id accessible without login)
-- [ ] Add "Share" button on story pages and feed cards (copy link + native share)
-- [ ] Add "Forward this briefing" email button on daily feed
-- [ ] Add Ruben author panel in AppLayout sidebar (headshot, title, IK stats, LinkedIn)
-- [ ] Add About page with Ruben bio, IK proof points, and media-kit-style layout
-- [ ] Add premium flag to users table for future monetisation gate
+- [x] Fix duplicate empty-string key errors on /editions page
+- [x] Fix headshot display in AppLayout sidebar (larger, better crop)
+- [x] Add subscribers DB table (email, name, confirmedAt, source, premiumAt)
+- [x] Add subscribe tRPC procedures (subscribe, confirm, unsubscribe)
+- [x] Add prominent subscribe CTA on homepage hero and story pages
+- [x] Add inline subscribe form in AppLayout sidebar
+- [x] Add shareable public story URL (/story/:id accessible without login)
+- [x] Add "Share" button on story pages and feed cards (copy link + native share)
+- [x] Add "Forward this briefing" email button on daily feed
+- [x] Add Ruben author panel in AppLayout sidebar (headshot, title, IK stats, LinkedIn)
+- [x] Add About page with Ruben bio, IK proof points, and media-kit-style layout
+- [x] Add premium flag to users table for future monetisation gate

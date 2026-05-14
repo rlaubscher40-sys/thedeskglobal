@@ -1,0 +1,18 @@
+{
+  "query": "\nSELECT 'editions' as tbl, COUNT(*) as total FROM editions\nUNION ALL\nSELECT 'daily_feed_items' as tbl, COUNT(*) as total FROM daily_feed_items;\n\nSELECT title, COUNT(*) as cnt, GROUP_CONCAT(id ORDER BY id ASC) as ids\nFROM daily_feed_items\nGROUP BY title\nHAVING cnt > 1\nORDER BY cnt DESC\nLIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44kpFRaAWYTEGd2.f72aef3c6a6b --database dCo7VYd4xNQxWrSX6SQCEW --execute \nSELECT 'editions' as tbl, COUNT(*) as total FROM editions\nUNION ALL\nSELECT 'daily_feed_items' as tbl, COUNT(*) as total FROM daily_feed_items;\n\nSELECT title, COUNT(*) as cnt, GROUP_CONCAT(id ORDER BY id ASC) as ids\nFROM daily_feed_items\nGROUP BY title\nHAVING cnt > 1\nORDER BY cnt DESC\nLIMIT 20;\n",
+  "rows": [
+    {
+      "tbl": "daily_feed_items",
+      "total": "7"
+    },
+    {
+      "tbl": "editions",
+      "total": "40"
+    }
+  ],
+  "messages": [],
+  "stdout": "tbl\ttotal\ndaily_feed_items\t7\neditions\t40\n",
+  "stderr": "",
+  "execution_time_ms": 1909
+}
