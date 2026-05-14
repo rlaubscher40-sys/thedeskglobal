@@ -320,23 +320,13 @@ function parseDbError(error: any): { message: string; code?: string; field?: str
   return { message: errMsg };
 }
 
-export function registerScheduledRoutes(app: Express) {
-  /**
-   * POST /api/ingest/daily-feed
-   * Accepts an array of feed items from the daily scan scheduled task.
-   * Body: { items: Array<{ title, source, sourceUrl?, summary, category, partnerTag?, sayThis?, feedDate }> }
-   *
-   * Returns per-item results: { success, count, failed, results: [{ index, success, error?, field? }] }
-   */
-  app.post("/api/ingest/daily-feed", async (req: Request, res: Response) => {
-    try {
-      const authenticated = await authenticateScheduledRequest(req);
-      if (!authenticated) {
-        res.status(401).json({ error: "Unauthorized" });
-        return;
-      }
-
-      const { items, replaceExisting = false } = req.body;
+/**
+ * Core daily feed ingest logic (auth-agnostic).
+ * Called by both /api/ingest/daily-feed (header-key auth) and /api/scheduled/daily-feed (cron-cookie auth).
+ */
+async function handleDailyFeedIngest(req: Request, res: Response): Promise<void> {
+  try {
+    const { items, replaceExisting = false } = req.body;
       if (!Array.isArray(items) || items.length === 0) {
         res.status(400).json({ error: "items array is required and must not be empty" });
         return;
@@ -560,22 +550,15 @@ export function registerScheduledRoutes(app: Express) {
         field: parsed.field,
       });
     }
-  });
+}
 
-  /**
-   * POST /api/ingest/weekly-edition
-   * Accepts a new weekly edition from the weekly scan scheduled task.
-   * Body: { editionNumber, weekOf, weekRange, topics, signals, fullText?, keyMetrics?, readingTime? }
-   */
-  app.post("/api/ingest/weekly-edition", async (req: Request, res: Response) => {
-    try {
-      const authenticated = await authenticateScheduledRequest(req);
-      if (!authenticated) {
-        res.status(401).json({ error: "Unauthorized" });
-        return;
-      }
-
-      const body = req.body;
+/**
+ * Core weekly edition ingest logic (auth-agnostic).
+ * Called by both /api/ingest/weekly-edition (header-key auth) and /api/scheduled/weekly-edition (cron-cookie auth).
+ */
+async function handleWeeklyEditionIngest(req: Request, res: Response): Promise<void> {
+  try {
+    const body = req.body;
       if (!body.editionNumber || !body.weekOf || !body.weekRange || !body.topics || !body.signals) {
         res.status(400).json({ error: "Missing required fields: editionNumber, weekOf, weekRange, topics, signals" });
         return;
@@ -719,16 +702,97 @@ export function registerScheduledRoutes(app: Express) {
       });
 
       res.json({ success: true, editionNumber: editionData.editionNumber });
-    } catch (error: any) {
-      const parsed = parseDbError(error);
-      console.error("[Ingest] weekly-edition error:", parsed);
-      res.status(500).json({
-        error: parsed.message,
-        code: parsed.code,
-        field: parsed.field,
-      });
+  } catch (error: any) {
+    const parsed = parseDbError(error);
+    console.error("[Ingest] weekly-edition error:", parsed);
+    res.status(500).json({
+      error: parsed.message,
+      code: parsed.code,
+      field: parsed.field,
+    });
+  }
+}
+
+export function registerScheduledRoutes(app: Express) {
+  /**
+   * POST /api/ingest/daily-feed
+   * Header-key authenticated entry point for the daily feed ingest.
+   */
+  app.post("/api/ingest/daily-feed", async (req: Request, res: Response) => {
+    const authenticated = await authenticateScheduledRequest(req);
+    if (!authenticated) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    await handleDailyFeedIngest(req, res);
+  });
+
+  /**
+   * POST /api/ingest/weekly-edition
+   * Header-key authenticated entry point for the weekly edition ingest.
+   */
+  app.post("/api/ingest/weekly-edition", async (req: Request, res: Response) => {
+    const authenticated = await authenticateScheduledRequest(req);
+    if (!authenticated) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    await handleWeeklyEditionIngest(req, res);
+  });
+
+  /**
+   * POST /api/scheduled/daily-feed
+   * Platform cron-cookie authenticated wrapper around the daily feed ingest logic.
+   * AGENT cron tasks inject $SCHEDULED_TASK_COOKIE as the app_session_id cookie.
+   * Accepts the same body schema as /api/ingest/daily-feed.
+   */
+  app.post("/api/scheduled/daily-feed", async (req: Request, res: Response) => {
+    try {
+      const user = await sdk.authenticateRequest(req);
+      if (!user.isCron) {
+        console.warn("[Scheduled] /api/scheduled/daily-feed called by non-cron user", user.openId);
+        res.status(403).json({ error: "This endpoint is only accessible by scheduled cron tasks" });
+        return;
+      }
+      console.log(`[Scheduled] daily-feed triggered by cron task ${user.taskUid}`);
+      // Auth passed — run the ingest logic directly (same as /api/ingest/daily-feed but without header-key check)
+      await handleDailyFeedIngest(req, res);
+    } catch (err: any) {
+      if (err?.code === "FORBIDDEN" || err?.message?.includes("Invalid session") || err?.message?.includes("Cron session")) {
+        res.status(403).json({ error: "permission error for cron cookie", detail: err.message });
+        return;
+      }
+      console.error("[Scheduled] daily-feed error:", err);
+      res.status(500).json({ error: err?.message || "Internal server error" });
     }
   });
 
-  console.log("[Ingest] Registered /api/ingest/daily-feed and /api/ingest/weekly-edition endpoints");
+  /**
+   * POST /api/scheduled/weekly-edition
+   * Platform cron-cookie authenticated wrapper around the weekly edition ingest logic.
+   * AGENT cron tasks inject $SCHEDULED_TASK_COOKIE as the app_session_id cookie.
+   * Accepts the same body schema as /api/ingest/weekly-edition.
+   */
+  app.post("/api/scheduled/weekly-edition", async (req: Request, res: Response) => {
+    try {
+      const user = await sdk.authenticateRequest(req);
+      if (!user.isCron) {
+        console.warn("[Scheduled] /api/scheduled/weekly-edition called by non-cron user", user.openId);
+        res.status(403).json({ error: "This endpoint is only accessible by scheduled cron tasks" });
+        return;
+      }
+      console.log(`[Scheduled] weekly-edition triggered by cron task ${user.taskUid}`);
+      // Auth passed — run the ingest logic directly (same as /api/ingest/weekly-edition but without header-key check)
+      await handleWeeklyEditionIngest(req, res);
+    } catch (err: any) {
+      if (err?.code === "FORBIDDEN" || err?.message?.includes("Invalid session") || err?.message?.includes("Cron session")) {
+        res.status(403).json({ error: "permission error for cron cookie", detail: err.message });
+        return;
+      }
+      console.error("[Scheduled] weekly-edition error:", err);
+      res.status(500).json({ error: err?.message || "Internal server error" });
+    }
+  });
+
+  console.log("[Ingest] Registered /api/ingest/daily-feed, /api/ingest/weekly-edition, /api/scheduled/daily-feed, /api/scheduled/weekly-edition");
 }
