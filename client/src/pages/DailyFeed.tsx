@@ -927,7 +927,7 @@ export default function DailyFeed() {
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: "url('/manus-storage/signal-desk-hero_8319a94c.png')",
+              backgroundImage: "url('https://d2xsxph8kpxj0f.cloudfront.net/310519663548646152/dCo7VYd4xNQxWrSX6SQCEW/hero-desk-fi2BqAQGCnmqhXJVov2MTd.webp')",
               backgroundSize: "cover",
               backgroundPosition: "center 35%",
             }}
