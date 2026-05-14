@@ -13,6 +13,7 @@ vi.mock("./_core/sdk", () => ({
 // Mock the db module
 vi.mock("./db", () => ({
   createDailyFeedItems: vi.fn().mockResolvedValue(undefined),
+  deleteDailyFeedItemsByDate: vi.fn().mockResolvedValue(undefined),
   createEdition: vi.fn().mockResolvedValue(undefined),
   // Deduplication guard helpers -- return empty/null so tests are not blocked by dedup
   getDailyFeedItems: vi.fn().mockResolvedValue([]),
@@ -210,6 +211,71 @@ describe("POST /api/ingest/daily-feed", () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.count).toBe(3);
+  });
+
+  it("rejects an existing feed date by default to prevent accidental duplicates", async () => {
+    const { getDailyFeedItems } = await import("./db");
+    vi.mocked(getDailyFeedItems).mockResolvedValueOnce([
+      { id: 1, title: "Existing item", feedDate: "2026-04-25" } as any,
+    ]);
+
+    const app = createTestApp();
+    const res = await request(app)
+      .post("/api/ingest/daily-feed")
+      .set("X-Scheduled-Key", TEST_API_KEY)
+      .send({
+        items: [
+          { title: "Replacement item", source: "Reuters", summary: "Summary", category: "AI", feedDate: "2026-04-25" },
+        ],
+      });
+
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe("DUPLICATE_FEED_DATE");
+    expect(res.body.existingCount).toBe(1);
+  });
+
+  it("replaces an existing feed date when replaceExisting is explicitly true", async () => {
+    const { getDailyFeedItems, deleteDailyFeedItemsByDate, createDailyFeedItems } = await import("./db");
+    vi.mocked(getDailyFeedItems)
+      .mockResolvedValueOnce([{ id: 1, title: "Existing item", feedDate: "2026-04-25" } as any])
+      .mockResolvedValueOnce([{ id: 2, title: "Replacement item", feedDate: "2026-04-25" } as any]);
+
+    const app = createTestApp();
+    const res = await request(app)
+      .post("/api/ingest/daily-feed")
+      .set("X-Scheduled-Key", TEST_API_KEY)
+      .send({
+        replaceExisting: true,
+        items: [
+          { title: "Replacement item", source: "Reuters", summary: "Summary", category: "AI", feedDate: "2026-04-25" },
+        ],
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.replacedExisting).toBe(true);
+    expect(res.body.replacedCount).toBe(1);
+    expect(deleteDailyFeedItemsByDate).toHaveBeenCalledWith("2026-04-25");
+    expect(createDailyFeedItems).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ title: "Replacement item" })])
+    );
+  });
+
+  it("rejects replacement batches with mixed feed dates", async () => {
+    const app = createTestApp();
+    const res = await request(app)
+      .post("/api/ingest/daily-feed")
+      .set("X-Scheduled-Key", TEST_API_KEY)
+      .send({
+        replaceExisting: true,
+        items: [
+          { title: "Item 1", source: "Reuters", summary: "Summary 1", category: "AI", feedDate: "2026-04-25" },
+          { title: "Item 2", source: "Bloomberg", summary: "Summary 2", category: "MACRO", feedDate: "2026-04-26" },
+        ],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe("MIXED_FEED_DATES");
   });
 
   it("uppercases category values", async () => {

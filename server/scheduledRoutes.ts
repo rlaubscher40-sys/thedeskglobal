@@ -336,9 +336,24 @@ export function registerScheduledRoutes(app: Express) {
         return;
       }
 
-      const { items } = req.body;
+      const { items, replaceExisting = false } = req.body;
       if (!Array.isArray(items) || items.length === 0) {
         res.status(400).json({ error: "items array is required and must not be empty" });
+        return;
+      }
+
+      if (replaceExisting !== false && replaceExisting !== true) {
+        res.status(400).json({ error: "replaceExisting must be a boolean when provided" });
+        return;
+      }
+
+      const suppliedFeedDates = Array.from(new Set(items.map((i: any) => i.feedDate).filter(Boolean)));
+      if (replaceExisting && suppliedFeedDates.length > 1) {
+        res.status(400).json({
+          error: "replaceExisting requires all feed items to use the same feedDate",
+          code: "MIXED_FEED_DATES",
+          feedDates: suppliedFeedDates,
+        });
         return;
       }
 
@@ -357,16 +372,20 @@ export function registerScheduledRoutes(app: Express) {
       }
 
       // ── Deduplication guard ──────────────────────────────────────────────────
-      // If items for this feedDate already exist, reject the entire batch to prevent duplicates.
+      // Default behaviour rejects duplicates. Authorised scheduled runs may pass
+      // replaceExisting=true to make the daily feed idempotent and recover from
+      // partial, stale, or test-item batches without manual database access.
       const firstDate = items.find((i: any) => i.feedDate)?.feedDate;
+      let existingCount = 0;
       if (firstDate) {
         const existing = await db.getDailyFeedItems(firstDate);
-        if (existing && existing.length > 0) {
-          console.warn(`[Ingest] Duplicate rejected: ${existing.length} feed items already exist for ${firstDate}`);
+        existingCount = existing?.length || 0;
+        if (existingCount > 0 && !replaceExisting) {
+          console.warn(`[Ingest] Duplicate rejected: ${existingCount} feed items already exist for ${firstDate}`);
           res.status(409).json({
-            error: `Feed items for ${firstDate} already exist (${existing.length} items)`,
+            error: `Feed items for ${firstDate} already exist (${existingCount} items)`,
             code: "DUPLICATE_FEED_DATE",
-            existingCount: existing.length,
+            existingCount,
           });
           return;
         }
@@ -402,6 +421,24 @@ export function registerScheduledRoutes(app: Express) {
         results.push({ index: i, success: true });
       }
 
+      // Replace existing rows only after validation and sanitisation succeed.
+      if (replaceExisting && firstDate && existingCount > 0) {
+        try {
+          await db.deleteDailyFeedItemsByDate(firstDate);
+          console.log(`[Ingest] Replaced ${existingCount} existing daily feed items for ${firstDate}`);
+        } catch (dbError: any) {
+          const parsed = parseDbError(dbError);
+          console.error("[Ingest] DB error deleting existing feed items:", parsed);
+          res.status(500).json({
+            error: parsed.message,
+            code: parsed.code,
+            field: parsed.field,
+            existingCount,
+          });
+          return;
+        }
+      }
+
       // Insert valid items
       if (validItems.length > 0) {
         try {
@@ -430,6 +467,8 @@ export function registerScheduledRoutes(app: Express) {
         success: true,
         count: successCount,
         failed: failedCount,
+        replacedExisting: Boolean(replaceExisting && existingCount > 0),
+        replacedCount: replaceExisting ? existingCount : undefined,
         results: failedCount > 0 ? results : undefined,
       });
 

@@ -205,6 +205,12 @@ export async function createDailyFeedItems(items: InsertDailyFeedItem[]) {
   return db.insert(dailyFeedItems).values(items);
 }
 
+export async function deleteDailyFeedItemsByDate(feedDate: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(dailyFeedItems).where(eq(dailyFeedItems.feedDate, feedDate));
+}
+
 export async function updateDailyFeedItemPartnerTag(id: number, partnerTag: string) {
   const db = await getDb();
   if (!db) return;
