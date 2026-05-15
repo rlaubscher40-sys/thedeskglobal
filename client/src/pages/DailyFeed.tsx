@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { normaliseKeyMetrics, getTrendColour, getMetricTooltip } from "@/lib/normaliseKeyMetrics";
+import { normaliseKeyMetrics, getTrendColour, getMetricTooltip, formatMetricLabel, extractShortValue } from "@/lib/normaliseKeyMetrics";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -600,14 +600,14 @@ function IntelligenceSnapshot({ items, mobileCollapsed, onToggleMobile }: { item
             <BarChart3 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             {firstMetric && (
               <span className="text-[11px] font-mono text-white/70 truncate">
-                <span className="text-white/40 mr-1">{firstMetric[0]}:</span>
-                <span className="font-bold text-white/90 truncate max-w-[120px] inline-block align-bottom">{firstMetric[1]}</span>
+                <span className="text-white/40 mr-1">{formatMetricLabel(firstMetric[0])}:</span>
+                <span className="font-bold text-white/90 truncate max-w-[120px] inline-block align-bottom">{extractShortValue(firstMetric[1]).display}</span>
               </span>
             )}
             {secondMetric && (
               <span className="text-[11px] font-mono text-white/70 truncate hidden sm:inline">
-                <span className="text-white/40 mr-1">{secondMetric[0]}:</span>
-                <span className="font-bold text-white/90 truncate max-w-[120px] inline-block align-bottom">{secondMetric[1]}</span>
+                <span className="text-white/40 mr-1">{formatMetricLabel(secondMetric[0])}:</span>
+                <span className="font-bold text-white/90 truncate max-w-[120px] inline-block align-bottom">{extractShortValue(secondMetric[1]).display}</span>
               </span>
             )}
             <span className="text-[10px] font-mono text-amber-500/60 shrink-0">
@@ -654,7 +654,8 @@ function IntelligenceSnapshot({ items, mobileCollapsed, onToggleMobile }: { item
               const trend = getMetricTrend(key);
               const prevVal = prevMetrics?.[key];
               const trendColour = getTrendColour(key, trend);
-              const tip = (trend === "up" || trend === "down") ? getMetricTooltip(key, trend) : null;
+              const { display: displayValue, note: valueNote } = extractShortValue(value);
+              const tip = valueNote || ((trend === "up" || trend === "down") ? getMetricTooltip(key, trend) : null);
               const barColour = trend === "up"
                 ? (trendColour.includes("emerald") ? "#34d399" : "#f87171")
                 : trend === "down"
@@ -669,12 +670,12 @@ function IntelligenceSnapshot({ items, mobileCollapsed, onToggleMobile }: { item
                 >
                   {/* Label */}
                   <span className="text-[10px] font-mono text-white/40 tracking-[0.08em] uppercase truncate mb-1.5">
-                    {key}
+                    {formatMetricLabel(key)}
                   </span>
                   {/* Value + trend arrow */}
                   <div className="flex items-center gap-1.5 mb-1 min-w-0">
                     <span className="text-base font-bold text-white leading-none tracking-tight truncate min-w-0">
-                      {value}
+                      {displayValue}
                     </span>
                     {trend && trend !== "flat" && (
                       <TrendIcon className={`w-4 h-4 shrink-0 ${trendColour}`} />

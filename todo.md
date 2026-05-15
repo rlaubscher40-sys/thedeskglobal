@@ -132,3 +132,8 @@
 
 ## Editions Page Mobile Fix
 - [x] Editions page: negative margins on outer wrapper causing edition cards to overflow on laptop — removed negative margins and compensating inner padding, layout now fits correctly at all widths
+
+## Key Metrics Tile Fix
+- [x] Key Metrics tiles showing raw data keys (AUS_PRO...) as label and full sentences as value — fixed with formatMetricLabel() converting SCREAMING_SNAKE_CASE to Title Case
+- [x] Key Metrics tile values showing full sentences — fixed with extractShortValue() extracting first numeric token, full sentence shown as tooltip
+- [x] SCHEDULED_TASK_PROMPT.md already enforces short label:value format (confirmed, no changes needed)

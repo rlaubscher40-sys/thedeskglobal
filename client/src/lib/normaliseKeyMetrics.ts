@@ -27,6 +27,38 @@ export type MetricItem = {
   note?: string;
 };
 
+/**
+ * Convert a raw DB key like AUS_PROPERTY_TAX or OIL_DEMAND into a
+ * human-readable label like "Aus Property Tax" or "Oil Demand".
+ * If the key already looks like a human label (contains spaces or mixed case), return as-is.
+ */
+export function formatMetricLabel(key: string): string {
+  // Already human-readable (has spaces or is not all-caps/underscores)
+  if (key.includes(' ')) return key;
+  // Convert SCREAMING_SNAKE_CASE to Title Case
+  return key
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/**
+ * If a metric value is a long sentence (>25 chars), extract the first short token
+ * (a number, percentage, currency value, or date) as the display value.
+ * Returns { display, note } where note is the full sentence if truncated, else null.
+ */
+export function extractShortValue(raw: string): { display: string; note: string | null } {
+  if (!raw || raw.length <= 25) return { display: raw, note: null };
+  // Try to extract a leading number/percentage/currency/date token
+  const match = raw.match(/^([A-Z]{1,3}\$?[\d,.]+%?|[\d,.]+%?|[\d]{1,2}\/[\d]{1,2}\/[\d]{2,4}|[\d]{4}-[\d]{2}-[\d]{2})/);
+  if (match) return { display: match[1], note: raw };
+  // Try to find a number anywhere in the first 40 chars
+  const numMatch = raw.substring(0, 60).match(/([A-Z]{1,3}\$?[\d,.]+%?|[\d,.]+%?)/);
+  if (numMatch) return { display: numMatch[1], note: raw };
+  // Fallback: truncate to first 20 chars with ellipsis
+  return { display: raw.substring(0, 20) + '…', note: raw };
+}
+
 export function normaliseKeyMetrics(
   raw: unknown
 ): Record<string, string> {
