@@ -1454,7 +1454,7 @@ export default function DailyFeed() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative mb-8"
+                  className="group relative mb-8 w-full min-w-0"
                   data-feed-card
                   data-item-id={hero.id}
                 >
@@ -1467,7 +1467,7 @@ export default function DailyFeed() {
                     }}
                   />
                   <div
-                    className={`relative rounded-2xl border-l-[4px] ${heroAccent} cursor-pointer transition-all duration-300`}
+                    className={`relative rounded-2xl border-l-[4px] ${heroAccent} cursor-pointer transition-all duration-300 overflow-hidden min-w-0 w-full`}
                     style={{
                       padding: "clamp(18px, 5vw, 32px) clamp(16px, 5vw, 32px) clamp(18px, 5vw, 28px)",
                       background: "rgba(10, 12, 24, 0.88)",
@@ -1520,7 +1520,7 @@ export default function DailyFeed() {
 
                     {/* Hero title - much larger */}
                     <h2
-                      className="font-serif font-bold group-hover:text-white transition-colors mb-4"
+                      className="font-serif font-bold group-hover:text-white transition-colors mb-4 break-words min-w-0"
                       style={{
                         fontSize: "clamp(22px, 3.5vw, 32px)",
                         lineHeight: 1.2,
@@ -1533,6 +1533,7 @@ export default function DailyFeed() {
 
                     {/* Summary */}
                     <p
+                      className="break-words"
                       style={{
                         fontSize: "15px",
                         lineHeight: 1.7,
@@ -1547,7 +1548,7 @@ export default function DailyFeed() {
                     {/* Say This block */}
                     {hero.sayThis && (
                       <div
-                        className="relative overflow-hidden mb-5"
+                        className="relative overflow-hidden mb-5 min-w-0"
                         style={{
                           padding: "20px 22px",
                           borderRadius: "14px",
@@ -1565,7 +1566,7 @@ export default function DailyFeed() {
                           <span className="font-mono uppercase tracking-widest" style={{ fontSize: "9px", fontWeight: 700, color: "rgba(245,166,35,0.7)" }}>Say This</span>
                         </div>
                         <p
-                          className="font-serif"
+                          className="font-serif break-words"
                           style={{ fontSize: "15px", lineHeight: 1.65, color: "rgba(255, 242, 200, 0.94)", fontWeight: 500, fontStyle: "italic", marginBottom: "14px" }}
                         >
                           "{hero.sayThis}"
@@ -1616,7 +1617,7 @@ export default function DailyFeed() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden mt-2"
                           >
-                            <p className="text-[11px] font-mono text-sky-400/80 leading-relaxed">{personaInsight}</p>
+                            <p className="text-[11px] font-mono text-sky-400/80 leading-relaxed break-words">{personaInsight}</p>
                           </motion.div>
                         )}
                       </div>

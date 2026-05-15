@@ -116,3 +116,6 @@
 - [x] Fix hero masthead inner padding causing overflow at 390px
 - [x] Fix category filter bar not clipping to viewport
 - [x] Add overflow-x-hidden to AppLayout main content wrapper
+
+## Hero Card Overflow Fix
+- [x] Fix hero card (featured top card) overflowing right edge on mobile — title, summary, Say This block, partner context all cut off
