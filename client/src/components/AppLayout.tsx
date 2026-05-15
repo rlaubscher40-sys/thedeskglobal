@@ -116,13 +116,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Ambient CSS orbs */}
       <div
-        className="fixed inset-0 pointer-events-none overflow-hidden"
-        style={{ zIndex: 0 }}
+        className="fixed pointer-events-none overflow-hidden"
+        style={{ zIndex: 0, top: 0, left: 0, right: 0, bottom: 0, maxWidth: "100vw", clipPath: "inset(0)" }}
         aria-hidden="true"
       >
-        <div className="ambient-orb-1 absolute top-[-15%] right-[5%] w-[700px] h-[700px] rounded-full bg-amber-500/[0.022] blur-[140px]" />
-        <div className="ambient-orb-2 absolute bottom-[-20%] left-[-5%] w-[600px] h-[600px] rounded-full bg-blue-600/[0.018] blur-[120px]" />
-        <div className="ambient-orb-3 absolute top-[40%] left-[30%] w-[400px] h-[400px] rounded-full bg-indigo-500/[0.012] blur-[100px]" />
+        <div className="ambient-orb-1 absolute top-[-15%] right-[5%] rounded-full bg-amber-500/[0.022] blur-[140px]" style={{ width: "min(700px, 70vw)", height: "min(700px, 70vw)" }} />
+        <div className="ambient-orb-2 absolute bottom-[-20%] left-[-5%] rounded-full bg-blue-600/[0.018] blur-[120px]" style={{ width: "min(600px, 60vw)", height: "min(600px, 60vw)" }} />
+        <div className="ambient-orb-3 absolute top-[40%] left-[30%] rounded-full bg-indigo-500/[0.012] blur-[100px]" style={{ width: "min(400px, 40vw)", height: "min(400px, 40vw)" }} />
       </div>
 
       {/* Top amber rule */}

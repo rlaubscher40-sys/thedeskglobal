@@ -514,7 +514,7 @@ function FeedCard({
 
 // ─── Intelligence Snapshot Panel ───
 
-function IntelligenceSnapshot({ items }: { items: any[] }) {
+function IntelligenceSnapshot({ items, mobileCollapsed, onToggleMobile }: { items: any[], mobileCollapsed?: boolean, onToggleMobile?: () => void }) {
   const { data: editions } = trpc.editions.list.useQuery();
   const { isAuthenticated } = useAuth();
   const { data: queueItems } = trpc.readingQueue.list.useQuery(undefined, {
@@ -571,8 +571,53 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
   }, [allMetrics]);
   const visibleMetrics = metricsExpanded ? displayMetrics : displayMetrics.slice(0, MOBILE_LIMIT);
 
+  // ── Mobile compact strip ──
+  const firstMetric = allMetrics[0];
+  const secondMetric = allMetrics[1];
+  const topicCount = categoryCounts.length;
+  const queueCount = unreadCount;
+
   return (
     <div className="space-y-4">
+      {/* Mobile compact strip — shown when mobileCollapsed=true */}
+      {mobileCollapsed && (
+        <button
+          onClick={onToggleMobile}
+          className="xl:hidden w-full flex items-center justify-between gap-3 px-4 py-3 rounded-2xl"
+          style={{
+            background: "rgba(13,15,26,0.85)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+          }}
+          aria-label="Expand intelligence panel"
+        >
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <BarChart3 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            {firstMetric && (
+              <span className="text-[11px] font-mono text-white/70 truncate">
+                <span className="text-white/40 mr-1">{firstMetric[0]}:</span>
+                <span className="font-bold text-white/90">{firstMetric[1]}</span>
+              </span>
+            )}
+            {secondMetric && (
+              <span className="text-[11px] font-mono text-white/70 truncate hidden sm:inline">
+                <span className="text-white/40 mr-1">{secondMetric[0]}:</span>
+                <span className="font-bold text-white/90">{secondMetric[1]}</span>
+              </span>
+            )}
+            <span className="text-[10px] font-mono text-amber-500/60 shrink-0">
+              {topicCount} topics{queueCount > 0 ? ` · ${queueCount} saved` : ""}
+            </span>
+          </div>
+          <ChevronDown className="w-4 h-4 text-white/40 shrink-0" />
+        </button>
+      )}
+
+      {/* Full panel — hidden on mobile when collapsed */}
+      <div className={mobileCollapsed ? "hidden xl:block" : "block"}>
+      <div className="space-y-4">
       {/* Key Metrics — reference design: 3-col grid, large value, trend arrow, sparkline */}
       {displayMetrics.length > 0 && (
         <div
@@ -856,6 +901,8 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
         </p>
         <SubscribeForm source="daily-feed" variant="compact" />
       </div>
+      </div>{/* end inner space-y-4 */}
+      </div>{/* end full panel wrapper */}
     </div>
   );
 }
@@ -986,11 +1033,11 @@ export default function DailyFeed() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, savedItems]);
 
-  const topItem = items?.[0];
+  // ── Mobile intelligence panel collapse state ──
+  const [mobilePanelCollapsed, setMobilePanelCollapsed] = useState(true);
 
-  // ── Category filter state ──────────────────────────────────────────────────
+  // ── Category filter state ──
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-
   // Derive the ordered list of categories present in today's items
   const presentCategories = useMemo(() => {
     if (!items) return [];
@@ -1006,12 +1053,15 @@ export default function DailyFeed() {
   // Reset filter when date changes
   useEffect(() => { setActiveCategory("ALL"); }, [selectedDate]);
 
-  // Filtered items (ALL = no filter)
+   // Filtered items (ALL = no filter)
   const filteredItems = useMemo(() => {
     if (!items) return [];
     if (activeCategory === "ALL") return items;
     return items.filter((item) => (item.category?.toUpperCase() || "OTHER") === activeCategory);
   }, [items, activeCategory]);
+
+  // Top item for the breaking signal toast
+  const topItem = items?.[0] ?? null;
 
   return (
     <>
@@ -1022,7 +1072,7 @@ export default function DailyFeed() {
       enabled={!isLoading && !!topItem}
     />
     <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0 overflow-x-hidden">
-      {/* Intelligence snapshot panel — shows above feed on mobile, sticky sidebar on xl */}
+      {/* Intelligence snapshot panel — compact strip on mobile, full sidebar on xl */}
       <motion.aside
         className="w-full xl:hidden"
         aria-label="Intelligence snapshot"
@@ -1030,7 +1080,21 @@ export default function DailyFeed() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       >
-        <IntelligenceSnapshot items={filteredItems || []} />
+        <IntelligenceSnapshot
+          items={filteredItems || []}
+          mobileCollapsed={mobilePanelCollapsed}
+          onToggleMobile={() => setMobilePanelCollapsed(p => !p)}
+        />
+        {/* Collapse button — only shown when panel is expanded */}
+        {!mobilePanelCollapsed && (
+          <button
+            onClick={() => setMobilePanelCollapsed(true)}
+            className="xl:hidden mt-2 w-full flex items-center justify-center gap-1.5 text-[10px] font-mono text-white/30 hover:text-white/60 transition-colors py-2"
+          >
+            <ChevronUp className="w-3.5 h-3.5" />
+            Collapse panel
+          </button>
+        )}
       </motion.aside>
 
       {/* Main feed column */}
@@ -1354,8 +1418,11 @@ export default function DailyFeed() {
         {/* ── Category filter bar ── */}
         {!isLoading && items && items.length > 0 && presentCategories.length > 1 && (
           <div
-            className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 -mx-1 px-1"
+            className="w-full max-w-full overflow-x-auto mb-6"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+          <div
+            className="flex items-center gap-2 pb-1 w-max"
             role="tablist"
             aria-label="Filter by category"
           >
@@ -1363,6 +1430,7 @@ export default function DailyFeed() {
               const isActive = activeCategory === cat;
               const colors = CATEGORY_COLORS[cat];
               // Extract the text colour class for the active pill
+              // (inner map — no change needed here)
               const textClass = colors?.split(" ")[1] || "text-white/70";
               const bgClass = colors?.split(" ")[0] || "bg-white/10";
               const borderClass = colors?.split(" ")[2] || "border-white/20";
@@ -1384,8 +1452,8 @@ export default function DailyFeed() {
               );
             })}
           </div>
+          </div>
         )}
-
         {/* Feed items */}
         {isLoading && (
           <div className="space-y-4">

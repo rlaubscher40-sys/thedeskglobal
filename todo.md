@@ -125,3 +125,7 @@
 - [x] Reduce page padding on mobile to p-2 (was p-4) to give cards more room
 - [x] Fix feed list wrapper to be w-full overflow-hidden
 - [x] Collapse Key Metrics panel on mobile into compact 2-row strip with See All toggle
+
+## Mobile Intelligence Panel Collapse + Final Overflow Fix
+- [x] Fix category filter bar horizontal overflow — constrain to viewport width with proper contain
+- [x] Collapse entire intelligence panel on mobile into compact strip (2 key metrics + topic count + queue count) with expand toggle
