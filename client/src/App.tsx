@@ -63,7 +63,7 @@ function RouteContent() {
         animate={prefersReduced ? {} : { opacity: 1 }}
         exit={prefersReduced ? {} : { opacity: 0 }}
         transition={{ duration: 0.15, ease: "easeOut" }}
-        style={{ minHeight: 0, position: "relative" }}
+        style={{ minHeight: 0, position: "relative", width: "100%", overflow: "hidden" }}
       >
         <Switch>
           <Route path={"/"} component={DailyFeed} />

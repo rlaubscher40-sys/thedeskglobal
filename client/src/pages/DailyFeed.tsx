@@ -21,6 +21,7 @@ import {
   BookOpen,
   MessageSquareQuote,
   ChevronDown,
+  ChevronUp,
   Copy,
   Linkedin,
   Share2,
@@ -211,7 +212,7 @@ function FeedCard({
       viewport={{ once: true, margin: "0px" }}
       transition={{ delay: Math.min(index * 0.07, 0.35), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       whileTap={{ scale: 0.985 }}
-      className="group relative"
+      className="group relative w-full min-w-0"
       data-feed-card
       data-item-id={item.id}
     >
@@ -224,8 +225,9 @@ function FeedCard({
         }}
       />
       <div
-        className={`relative border-l-[3px] ${accentBorder} cursor-pointer transition-all duration-300`}
+        className={`relative border-l-[3px] ${accentBorder} cursor-pointer transition-all duration-300 w-full overflow-hidden min-w-0`}
         style={{
+          maxWidth: "100%",
           padding: size === "medium" ? "clamp(16px, 4vw, 26px) clamp(14px, 4vw, 28px)" : "clamp(14px, 3.5vw, 22px) clamp(12px, 3.5vw, 24px)",
           background: size === "medium" ? "rgba(11, 13, 24, 0.82)" : "rgba(13, 15, 26, 0.75)",
           backdropFilter: "blur(20px)",
@@ -518,6 +520,7 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
   const { data: queueItems } = trpc.readingQueue.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+  const [metricsExpanded, setMetricsExpanded] = useState(false);
 
   const latestEdition = editions?.[0];
   const keyMetrics = normaliseKeyMetrics(latestEdition?.keyMetrics);
@@ -556,10 +559,17 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
     return "flat";
   };
 
-  const displayMetrics = useMemo(() => {
+  const allMetrics = useMemo(() => {
     if (!keyMetrics || Object.keys(keyMetrics).length === 0) return [];
     return Object.entries(keyMetrics).slice(0, 9);
   }, [keyMetrics]);
+
+  // On mobile, show 4 tiles by default; expand to all on tap
+  const MOBILE_LIMIT = 4;
+  const displayMetrics = useMemo(() => {
+    return allMetrics;
+  }, [allMetrics]);
+  const visibleMetrics = metricsExpanded ? displayMetrics : displayMetrics.slice(0, MOBILE_LIMIT);
 
   return (
     <div className="space-y-4">
@@ -592,7 +602,7 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
           </div>
           {/* 3-column metric grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: "rgba(255,255,255,0.04)", borderRadius: "10px", overflow: "hidden" }}>
-            {displayMetrics.map(([key, value]) => {
+            {visibleMetrics.map(([key, value]) => {
               const trend = getMetricTrend(key);
               const prevVal = prevMetrics?.[key];
               const trendColour = getTrendColour(key, trend);
@@ -650,6 +660,19 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
               ) : tileContent;
             })}
           </div>
+          {/* See All / See Less toggle — only shown on mobile when there are more than MOBILE_LIMIT metrics */}
+          {displayMetrics.length > MOBILE_LIMIT && (
+            <button
+              onClick={() => setMetricsExpanded(p => !p)}
+              className="sm:hidden mt-3 w-full flex items-center justify-center gap-1.5 text-[10px] font-mono text-amber-500/60 hover:text-amber-400 transition-colors py-1"
+            >
+              {metricsExpanded ? (
+                <><ChevronUp className="w-3 h-3" /> See less</>
+              ) : (
+                <><ChevronDown className="w-3 h-3" /> See all {displayMetrics.length} metrics</>
+              )}
+            </button>
+          )}
           {latestEdition && (
             <Link href="/editions">
               <p className="text-[9px] text-amber-500/40 hover:text-amber-400 mt-3 cursor-pointer transition-colors tracking-wider uppercase">
@@ -1443,7 +1466,7 @@ export default function DailyFeed() {
         )}
 
         {!isLoading && filteredItems && filteredItems.length > 0 && (
-          <div>
+          <div className="w-full overflow-hidden">
             {/* ─── FEATURED HERO STORY ─── */}
             {(() => {
               const hero = filteredItems[0];
@@ -1469,6 +1492,7 @@ export default function DailyFeed() {
                   <div
                     className={`relative rounded-2xl border-l-[4px] ${heroAccent} cursor-pointer transition-all duration-300 overflow-hidden min-w-0 w-full`}
                     style={{
+                      maxWidth: "100%",
                       padding: "clamp(18px, 5vw, 32px) clamp(16px, 5vw, 32px) clamp(18px, 5vw, 28px)",
                       background: "rgba(10, 12, 24, 0.88)",
                       backdropFilter: "blur(20px)",

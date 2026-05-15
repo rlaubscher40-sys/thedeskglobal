@@ -119,3 +119,9 @@
 
 ## Hero Card Overflow Fix
 - [x] Fix hero card (featured top card) overflowing right edge on mobile — title, summary, Say This block, partner context all cut off
+
+## Card Overflow + Key Metrics Collapse (Mobile)
+- [x] Force all feed cards and hero card to max-width 100% / box-sizing border-box so they never exceed viewport width
+- [x] Reduce page padding on mobile to p-2 (was p-4) to give cards more room
+- [x] Fix feed list wrapper to be w-full overflow-hidden
+- [x] Collapse Key Metrics panel on mobile into compact 2-row strip with See All toggle

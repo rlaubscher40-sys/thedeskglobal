@@ -594,7 +594,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           />
 
           {/* Page content */}
-          <div className="p-4 sm:p-7 lg:p-8 pb-28 lg:pb-8 overflow-x-hidden min-w-0">{children}</div>
+          <div className="p-2 sm:p-7 lg:p-8 pb-28 lg:pb-8 overflow-x-hidden min-w-0">{children}</div>
         </main>
       </div>
 
