@@ -601,13 +601,13 @@ function IntelligenceSnapshot({ items, mobileCollapsed, onToggleMobile }: { item
             {firstMetric && (
               <span className="text-[11px] font-mono text-white/70 truncate">
                 <span className="text-white/40 mr-1">{firstMetric[0]}:</span>
-                <span className="font-bold text-white/90">{firstMetric[1]}</span>
+                <span className="font-bold text-white/90 truncate max-w-[120px] inline-block align-bottom">{firstMetric[1]}</span>
               </span>
             )}
             {secondMetric && (
               <span className="text-[11px] font-mono text-white/70 truncate hidden sm:inline">
                 <span className="text-white/40 mr-1">{secondMetric[0]}:</span>
-                <span className="font-bold text-white/90">{secondMetric[1]}</span>
+                <span className="font-bold text-white/90 truncate max-w-[120px] inline-block align-bottom">{secondMetric[1]}</span>
               </span>
             )}
             <span className="text-[10px] font-mono text-amber-500/60 shrink-0">
@@ -1074,7 +1074,7 @@ export default function DailyFeed() {
       feedDate={topItem?.feedDate ?? null}
       enabled={!isLoading && !!topItem}
     />
-    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0 overflow-x-hidden px-3 sm:px-0">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-stretch xl:items-start w-full min-w-0 overflow-x-hidden px-3 sm:px-0">
       {/* Intelligence snapshot panel — compact strip on mobile, full sidebar on xl */}
       <motion.aside
         className="w-full xl:hidden"
@@ -1425,7 +1425,7 @@ export default function DailyFeed() {
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
           <div
-            className="flex items-center gap-2 pb-1 w-max"
+            className="inline-flex items-center gap-2 pb-1"
             role="tablist"
             aria-label="Filter by category"
           >
