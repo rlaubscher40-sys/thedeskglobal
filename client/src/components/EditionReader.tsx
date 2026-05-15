@@ -133,7 +133,7 @@ function LeadStory({ topic, editionNumber, bookmarked, onBookmark, onLinkedInPos
       }}
     >
       {/* Hero header */}
-      <div className="p-8 md:p-12 pb-6">
+      <div className="p-5 sm:p-8 md:p-12 pb-6">
         <div className="flex items-start justify-between gap-4 mb-6">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="w-2.5 h-2.5 rounded-full" style={{ background: s.dot, boxShadow: `0 0 8px ${s.dot}` }} />
@@ -216,7 +216,7 @@ function LeadStory({ topic, editionNumber, bookmarked, onBookmark, onLinkedInPos
         <>
           <button
             onClick={() => setExpanded((p) => !p)}
-            className="w-full flex items-center justify-between px-8 md:px-12 py-3 transition-all"
+            className="w-full flex items-center justify-between px-5 sm:px-8 md:px-12 py-3 transition-all"
             style={{
               background: expanded ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.02)",
               borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -361,7 +361,7 @@ function DeepContent({ topic, wide = false, onLinkedInPost }: { topic: EditionTo
     <div
       className="space-y-6"
       style={{
-        padding: wide ? "32px 48px 40px" : "20px 24px 28px",
+        padding: wide ? "clamp(16px, 4vw, 32px) clamp(16px, 5vw, 48px) clamp(20px, 4vw, 40px)" : "16px 18px 22px",
         borderTop: "1px solid rgba(255,255,255,0.05)",
       }}
     >
@@ -679,7 +679,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
             <h1
               className="font-serif font-black tracking-tight"
               style={{
-                fontSize: "clamp(52px, 9vw, 110px)",
+                fontSize: "clamp(36px, 9vw, 110px)",
                 color: "rgba(245,238,220,0.98)",
                 lineHeight: 0.92,
                 letterSpacing: "-0.03em",
@@ -959,7 +959,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
               </p>
               {/* Metric tiles — wrap into a centred grid, fall back to horizontal scroll on very small screens */}
               <div
-                className="flex flex-wrap justify-center gap-3"
+                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5"
                 style={{ scrollbarWidth: "none" }}
               >
                 {metricItems.filter((m) => m.label && m.label.trim() !== "").map((metric, metricIdx) => {
@@ -979,10 +979,9 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                     return (
                       <div
                         key={metric.label || `metric-${metricIdx}`}
-                        className="flex-none px-4 py-3 rounded-xl"
-                        style={{
-                          minWidth: "220px",
-                          maxWidth: "320px",
+                      className="col-span-2 sm:col-span-3 lg:col-span-4 px-4 py-3 rounded-xl"
+                      style={{
+                        minWidth: "0",
                           background: "rgba(255,255,255,0.04)",
                           border: "1px solid rgba(255,255,255,0.07)",
                         }}
@@ -999,9 +998,9 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                   return (
                     <div
                       key={metric.label || `metric-${metricIdx}`}
-                      className="flex-none px-5 py-4 rounded-xl text-center"
+                      className="px-3 py-3 rounded-xl text-center"
                       style={{
-                        minWidth: "130px",
+                        minWidth: "0",
                         background: "rgba(255,255,255,0.04)",
                         border: "1px solid rgba(255,255,255,0.07)",
                       }}
@@ -1061,7 +1060,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
 
               {/* Remaining topics -- masonry columns so expanding one card doesn't create whitespace in adjacent cards */}
               {topics.length > 1 && (
-                <div className="columns-1 md:columns-2 xl:columns-3 gap-5">
+                <div className="columns-1 sm:columns-2 xl:columns-3 gap-5">
                   {topics.slice(1).map((topic, i) => (
                     <TopicCard
                       key={i + 1}
@@ -1214,7 +1213,7 @@ export default function EditionReader({ edition, allEditions, bookmarked, onBook
                 borderTop: "1px solid rgba(245,166,35,0.2)",
               }}
             >
-              <div className="max-w-2xl mx-auto flex items-center gap-4 flex-wrap">
+              <div className="max-w-2xl mx-auto flex items-center gap-3 flex-wrap">
                 <img
                   src="/manus-storage/ruben-headshot_4c885a17.jpeg"
                   alt="Ruben Laubscher"

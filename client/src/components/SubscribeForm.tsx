@@ -115,7 +115,8 @@ export function SubscribeForm({ source = "homepage", variant = "compact", classN
 
   // Compact: single-line
   return (
-    <form onSubmit={handleSubmit} className={`flex gap-2 ${className}`}>
+    <form onSubmit={handleSubmit} className={`flex flex-col gap-2 ${className}`}>
+      <div className="flex gap-2">
       <input
         type="email"
         placeholder="Your email"
@@ -146,8 +147,9 @@ export function SubscribeForm({ source = "homepage", variant = "compact", classN
       >
         {subscribe.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Subscribe"}
       </button>
+      </div>
       {error && (
-        <p className="text-xs mt-1 w-full" style={{ color: "rgba(251,113,133,0.9)" }}>{error}</p>
+        <p className="text-xs" style={{ color: "rgba(251,113,133,0.9)" }}>{error}</p>
       )}
     </form>
   );

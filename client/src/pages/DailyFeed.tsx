@@ -590,7 +590,7 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
             )}
           </div>
           {/* 3-column metric grid */}
-          <div className="grid grid-cols-2 xl:grid-cols-3 gap-px" style={{ background: "rgba(255,255,255,0.04)", borderRadius: "10px", overflow: "hidden" }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: "rgba(255,255,255,0.04)", borderRadius: "10px", overflow: "hidden" }}>
             {displayMetrics.map(([key, value]) => {
               const trend = getMetricTrend(key);
               const prevVal = prevMetrics?.[key];
@@ -997,7 +997,18 @@ export default function DailyFeed() {
       feedDate={topItem?.feedDate ?? null}
       enabled={!isLoading && !!topItem}
     />
-    <div className="flex flex-col xl:flex-row gap-10 items-start">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start">
+      {/* Intelligence snapshot panel — shows above feed on mobile, sticky sidebar on xl */}
+      <motion.aside
+        className="w-full xl:hidden"
+        aria-label="Intelligence snapshot"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <IntelligenceSnapshot items={filteredItems || []} />
+      </motion.aside>
+
       {/* Main feed column */}
       <div className="flex-1 min-w-0">
         {/* ─── CINEMATIC MASTHEAD ─── */}
@@ -1128,7 +1139,7 @@ export default function DailyFeed() {
                 }}
                 className="font-serif font-bold tracking-tight"
                 style={{
-                  fontSize: "clamp(42px, 7vw, 80px)",
+                  fontSize: "clamp(26px, 8vw, 80px)",
                   letterSpacing: "-0.04em",
                   lineHeight: 1.05,
                   paddingBottom: "0.08em",
@@ -1156,7 +1167,7 @@ export default function DailyFeed() {
                 transition={{ delay: 0.28, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
                 className="font-serif font-bold"
                 style={{
-                  fontSize: "clamp(42px, 7vw, 80px)",
+                  fontSize: "clamp(26px, 8vw, 80px)",
                   letterSpacing: "-0.04em",
                   lineHeight: 1.1,
                   paddingBottom: "0.12em",
@@ -1200,6 +1211,7 @@ export default function DailyFeed() {
                   fontWeight: 400,
                   letterSpacing: "-0.01em",
                 }}
+                className="hidden sm:block"
               >
                 What's cutting through right now. 60-second scan, updated every morning.
               </p>
@@ -1221,7 +1233,7 @@ export default function DailyFeed() {
                     backfillSayThis.mutate();
                   }}
                   disabled={backfillingSayThis}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed self-start"
                   style={{
                     background: backfillingSayThis ? 'rgba(245,166,35,0.08)' : 'rgba(245,166,35,0.12)',
                     border: '1px solid rgba(245,166,35,0.25)',
@@ -1236,7 +1248,7 @@ export default function DailyFeed() {
                   )}
                 </button>
               )}
-              <div className="flex-1">
+              <div className="w-full sm:flex-1">
                 <PersonaSelector />
               </div>
             </motion.div>
@@ -1246,9 +1258,9 @@ export default function DailyFeed() {
         {/* Date navigation */}
         {hasData && (
           <div
-            className="flex items-center gap-3 mb-8"
+            className="flex items-center gap-2 mb-8"
             style={{
-              padding: "10px 14px",
+              padding: "8px 10px",
               borderRadius: "12px",
               background: "rgba(13, 15, 26, 0.6)",
               backdropFilter: "blur(12px)",
@@ -1281,7 +1293,7 @@ export default function DailyFeed() {
                     if (idx !== -1) setSelectedDateIndex(idx);
                   }}
                   className="appearance-none bg-transparent border-none font-semibold text-center cursor-pointer focus:outline-none focus:ring-1 focus:ring-amber-500/40 rounded px-1 py-0.5 [color-scheme:dark]"
-                  style={{ fontSize: "13px", color: "rgba(245,238,220,0.75)", letterSpacing: "-0.01em" }}
+                  style={{ fontSize: "12px", color: "rgba(245,238,220,0.75)", letterSpacing: "-0.01em" }}
                   aria-label="Jump to a specific date"
                 />
                 {selectedDate === today && (
@@ -1456,7 +1468,7 @@ export default function DailyFeed() {
                   <div
                     className={`relative rounded-2xl border-l-[4px] ${heroAccent} cursor-pointer transition-all duration-300`}
                     style={{
-                      padding: "32px 32px 28px",
+                      padding: "clamp(18px, 5vw, 32px) clamp(16px, 5vw, 32px) clamp(18px, 5vw, 28px)",
                       background: "rgba(10, 12, 24, 0.88)",
                       backdropFilter: "blur(20px)",
                       WebkitBackdropFilter: "blur(20px)",
@@ -1557,7 +1569,7 @@ export default function DailyFeed() {
                         >
                           "{hero.sayThis}"
                         </p>
-                        <div className="flex items-center gap-3 pt-2 border-t border-amber-500/10">
+                        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-amber-500/10">
                           <button
                             onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(hero.sayThis ?? '').then(() => { setHeroCopied(true); toast.success("Talking point copied"); setTimeout(() => setHeroCopied(false), 2000); }); }}
                             className={`inline-flex items-center gap-1.5 text-[10px] font-mono transition-all duration-200 ${
@@ -1610,7 +1622,7 @@ export default function DailyFeed() {
                     )}
 
                     {/* Footer */}
-                    <div className="flex items-center gap-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div className="flex flex-wrap items-center gap-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                       {hero.sourceUrl ? (
                         <a
                           href={hero.sourceUrl}
@@ -1719,9 +1731,9 @@ export default function DailyFeed() {
         label="Say This"
       />
 
-      {/* Right-hand intelligence snapshot panel (desktop only) */}
+      {/* Intelligence snapshot panel — sticky sidebar on xl only (mobile version is above) */}
       <motion.aside
-        className="hidden xl:block w-72 shrink-0 sticky top-6"
+        className="hidden xl:block xl:w-72 xl:shrink-0 xl:sticky xl:top-6"
         aria-label="Intelligence snapshot"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}

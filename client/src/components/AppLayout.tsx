@@ -553,8 +553,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <main className="flex-1 overflow-y-auto relative">
           {/* Mobile header */}
           <div
-            className="lg:hidden flex items-center gap-3 px-4 py-3"
-            style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+            className="lg:hidden sticky top-0 z-20 flex items-center gap-3 px-4 py-3"
+            style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(9,11,20,0.92)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
             <button
               onClick={() => setMobileOpen(true)}
@@ -594,7 +594,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           />
 
           {/* Page content */}
-          <div className="p-5 sm:p-7 lg:p-8 pb-24 lg:pb-8">{children}</div>
+          <div className="p-4 sm:p-7 lg:p-8 pb-28 lg:pb-8">{children}</div>
         </main>
       </div>
 
@@ -621,7 +621,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             background: "linear-gradient(90deg, transparent 0%, rgba(245,166,35,0.4) 30%, rgba(245,166,35,0.7) 50%, rgba(245,166,35,0.4) 70%, transparent 100%)",
           }}
         />
-        <div className="flex items-center justify-around px-2 py-2">
+        <div className="flex items-center justify-around px-1 py-1.5">
           {[
             { path: "/", label: "Today", icon: Newspaper },
             { path: "/editions", label: "Editions", icon: BookOpen },

@@ -35,14 +35,17 @@ export function BreakingSignalToast({ headline, category, feedDate, enabled }: B
     localStorage.setItem(STORAGE_KEY, todayKey);
 
     // Short delay so the page has settled before the toast fires
-    const timer = setTimeout(() => {
+      const timer = setTimeout(() => {
       // Trigger newspaper burst from bottom-right (where Sonner toasts appear)
       const prefersReduced =
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+      // On mobile (< 1024px) use top-center so the toast doesn't sit behind the fixed bottom nav
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+
       if (!prefersReduced) {
-        triggerPageBurst(window.innerWidth - 80, window.innerHeight - 80);
+        triggerPageBurst(window.innerWidth - 80, isMobile ? 80 : window.innerHeight - 80);
       }
 
       const cat = category?.toUpperCase() || "SIGNAL";
@@ -169,7 +172,7 @@ export function BreakingSignalToast({ headline, category, feedDate, enabled }: B
         ),
         {
           duration: 7000,
-          position: "bottom-right",
+          position: typeof window !== "undefined" && window.innerWidth < 1024 ? "top-center" : "bottom-right",
         }
       );
     }, 1800);

@@ -218,7 +218,7 @@ export default function Editions() {
           {/* Metrics skeleton */}
           <div className="p-5 rounded-xl mb-8 animate-pulse" style={{ background: "rgba(10,12,24,0.75)", border: "1px solid rgba(255,255,255,0.06)" }}>
             <div className="w-20 h-3 rounded mb-4" style={{ background: "rgba(255,255,255,0.06)" }} />
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {[1,2,3].map((i) => (
                 <div key={i}>
                   <div className="w-16 h-3 rounded mb-2" style={{ background: "rgba(255,255,255,0.05)" }} />

@@ -90,3 +90,20 @@
 - [x] Update curl commands to use $THEDESK_SCHEDULED_API_KEY from credential file
 - [x] Update keyMetrics example in prompt to show correct short label:value format
 - [x] Update weekly edition day from Wednesday to Thursday (Sydney time) to match actual schedule
+
+## Mobile Responsiveness Fixes
+- [x] DailyFeed: masthead hero text too large on mobile, reduce heading size below md breakpoint
+- [x] DailyFeed: Key Metrics grid — 2-col on mobile (currently 2 xl:3), ensure tiles don't overflow
+- [x] DailyFeed: category filter bar pills — ensure horizontal scroll works on mobile without clipping
+- [x] DailyFeed: feed cards — ensure action buttons (Copy/Share/Copy link/Save) wrap or stack on mobile
+- [x] DailyFeed: IntelligenceSnapshot panel — hidden on xl, needs to appear inline above feed on mobile
+- [x] DailyFeed: admin toolbar (GEN ALL SAY THIS, persona buttons) — stack vertically on mobile
+- [x] DailyFeed: date navigator — ensure it fits on narrow screens without overflow
+- [x] Editions: Key Signals 3-col masonry grid — reduce to 1-col on mobile, 2-col on sm
+- [x] Editions: edition list sidebar — ensure it doesn't overflow on mobile
+- [x] EditionReader: Key Signals 3-col grid — reduce to 1-col on mobile
+- [x] EditionReader: full-screen overlay — ensure it is scrollable and not cut off on mobile
+- [x] AppLayout: mobile hamburger menu — verify it opens/closes correctly
+- [x] AppLayout: bottom nav bar — ensure it doesn't overlap content on mobile
+- [x] AppLayout: sidebar overlay — ensure backdrop closes on tap
+- [x] General: ensure no horizontal scroll on any page at 390px width
