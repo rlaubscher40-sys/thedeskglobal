@@ -225,16 +225,19 @@ function FeedCard({
         }}
       />
       <div
-        className={`relative border-l-[3px] ${accentBorder} cursor-pointer transition-all duration-300 w-full overflow-hidden min-w-0`}
+        className={`relative ${accentBorder} cursor-pointer transition-all duration-300 w-full overflow-hidden min-w-0`}
         style={{
-          maxWidth: "100%",
-          padding: size === "medium" ? "clamp(16px, 4vw, 26px) clamp(14px, 4vw, 28px)" : "clamp(14px, 3.5vw, 22px) clamp(12px, 3.5vw, 24px)",
+          padding: size === "medium" ? "16px 16px" : "14px 14px",
           background: size === "medium" ? "rgba(11, 13, 24, 0.82)" : "rgba(13, 15, 26, 0.75)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.07)",
+          borderTop: "1px solid rgba(255,255,255,0.07)",
+          borderRight: "1px solid rgba(255,255,255,0.07)",
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
           borderLeftWidth: size === "medium" ? "4px" : "3px",
+          borderLeftStyle: "solid",
           borderRadius: size === "medium" ? "18px" : "14px",
+          boxSizing: "border-box",
           boxShadow: size === "medium"
             ? "0 6px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)"
             : "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04)",
@@ -1071,7 +1074,7 @@ export default function DailyFeed() {
       feedDate={topItem?.feedDate ?? null}
       enabled={!isLoading && !!topItem}
     />
-    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0 overflow-x-hidden">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0 overflow-x-hidden px-3 sm:px-0">
       {/* Intelligence snapshot panel — compact strip on mobile, full sidebar on xl */}
       <motion.aside
         className="w-full xl:hidden"
