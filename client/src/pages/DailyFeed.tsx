@@ -289,7 +289,7 @@ function FeedCard({
 
             {/* Title - dominant */}
             <h3
-              className="font-serif group-hover:text-white transition-colors"
+              className="font-serif group-hover:text-white transition-colors break-words min-w-0"
               style={{
                 fontSize: size === "medium" ? "22px" : "17px",
                 fontWeight: 700,
@@ -304,6 +304,7 @@ function FeedCard({
 
             {/* Summary - secondary */}
             <p
+              className="break-words"
               style={{
                 fontSize: size === "medium" ? "14px" : "13px",
                 lineHeight: 1.65,
@@ -997,7 +998,7 @@ export default function DailyFeed() {
       feedDate={topItem?.feedDate ?? null}
       enabled={!isLoading && !!topItem}
     />
-    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0 overflow-x-hidden">
       {/* Intelligence snapshot panel — shows above feed on mobile, sticky sidebar on xl */}
       <motion.aside
         className="w-full xl:hidden"
