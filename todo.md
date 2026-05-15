@@ -129,3 +129,6 @@
 ## Mobile Intelligence Panel Collapse + Final Overflow Fix
 - [x] Fix category filter bar horizontal overflow — constrain to viewport width with proper contain
 - [x] Collapse entire intelligence panel on mobile into compact strip (2 key metrics + topic count + queue count) with expand toggle
+
+## Editions Page Mobile Fix
+- [x] Editions page: negative margins on outer wrapper causing edition cards to overflow on laptop — removed negative margins and compensating inner padding, layout now fits correctly at all widths

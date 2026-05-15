@@ -257,7 +257,7 @@ export default function Editions() {
   }
 
   return (
-    <div className="flex gap-0 -mx-5 sm:-mx-7 lg:-mx-8 -mt-5 sm:-mt-7 lg:-mt-8">
+    <div className="flex gap-0 w-full min-w-0 overflow-hidden">
       {/* Collapsible Edition list sidebar */}
       <motion.div
         initial={false}
@@ -368,7 +368,7 @@ export default function Editions() {
 
       {/* Edition detail + right sidebar */}
       {selected && (
-        <div className="flex-1 flex gap-6 min-w-0 p-5 sm:p-7 lg:p-8">
+        <div className="flex-1 flex gap-6 min-w-0">
         <motion.div
           key={selected.id}
           initial={{ opacity: 0, y: 12 }}
