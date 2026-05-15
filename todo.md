@@ -83,3 +83,10 @@
 - [x] Fix Key Metrics rendering in Editions.tsx — long-text values (>40 chars) render as compact note card instead of large number
 - [x] Fix Key Metrics rendering in EditionReader.tsx — long-text values (>40 chars) render as compact note tile in horizontal scroll strip
 - [x] Add sanitiseKeyMetrics() server-side helper in scheduledRoutes.ts — strips metric values >60 chars before DB storage, logs warning
+
+## Scheduled Task Auth Fix
+- [x] Rewrite SCHEDULED_TASK_PROMPT.md to use X-Scheduled-Key header auth via /api/ingest/ endpoints (not cookie-auth /api/scheduled/ endpoints)
+- [x] Remove all references to SCHEDULED_TASK_COOKIE from prompt and notes
+- [x] Update curl commands to use $THEDESK_SCHEDULED_API_KEY from credential file
+- [x] Update keyMetrics example in prompt to show correct short label:value format
+- [x] Update weekly edition day from Wednesday to Thursday (Sydney time) to match actual schedule
