@@ -356,7 +356,7 @@ function FeedCard({
                     "{item.sayThis}"
                   </p>
                   {/* Action buttons */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-amber-500/10">
+                  <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-500/10">
                     <button
                       onClick={handleCopyTalkingPoint}
                       aria-label="Copy talking point to clipboard"
@@ -470,7 +470,7 @@ function FeedCard({
 
         {/* Footer: source favicon + link */}
         <div
-          className="flex items-center gap-3 mt-4 pt-3"
+          className="flex flex-wrap items-center gap-3 mt-4 pt-3"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
           {item.sourceUrl ? (
@@ -605,7 +605,7 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
               const tileContent = (
                 <div
                   key={key}
-                  style={{ background: "rgba(13,15,26,0.9)", padding: "14px 16px 0 16px" }}
+                  style={{ background: "rgba(13,15,26,0.9)", padding: "12px 12px 0 12px" }}
                   className="flex flex-col"
                 >
                   {/* Label */}
@@ -613,8 +613,8 @@ function IntelligenceSnapshot({ items }: { items: any[] }) {
                     {key}
                   </span>
                   {/* Value + trend arrow */}
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xl font-bold text-white leading-none tracking-tight">
+                  <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                    <span className="text-base font-bold text-white leading-none tracking-tight truncate min-w-0">
                       {value}
                     </span>
                     {trend && trend !== "flat" && (
@@ -997,7 +997,7 @@ export default function DailyFeed() {
       feedDate={topItem?.feedDate ?? null}
       enabled={!isLoading && !!topItem}
     />
-    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 items-start w-full min-w-0">
       {/* Intelligence snapshot panel — shows above feed on mobile, sticky sidebar on xl */}
       <motion.aside
         className="w-full xl:hidden"
@@ -1016,7 +1016,7 @@ export default function DailyFeed() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mb-10 overflow-hidden"
+          className="relative mb-10 overflow-hidden w-full"
           style={{ borderRadius: "24px" }}
         >
           {/* Intelligence desk photo */}
@@ -1073,7 +1073,7 @@ export default function DailyFeed() {
             }}
           />
 
-          <div className="relative" style={{ padding: "clamp(20px, 5vw, 44px) clamp(16px, 5vw, 40px) clamp(32px, 5vw, 52px)" }}>
+          <div className="relative overflow-hidden" style={{ padding: "clamp(16px, 4vw, 44px) clamp(14px, 4vw, 40px) clamp(24px, 4vw, 52px)" }}>
             {/* Top row: live badge + date */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
@@ -1258,7 +1258,7 @@ export default function DailyFeed() {
         {/* Date navigation */}
         {hasData && (
           <div
-            className="flex items-center gap-2 mb-8"
+            className="flex items-center gap-2 mb-8 w-full min-w-0"
             style={{
               padding: "8px 10px",
               borderRadius: "12px",
@@ -1330,8 +1330,8 @@ export default function DailyFeed() {
         {/* ── Category filter bar ── */}
         {!isLoading && items && items.length > 0 && presentCategories.length > 1 && (
           <div
-            className="flex items-center gap-2 mb-6 overflow-x-auto pb-1"
-            style={{ scrollbarWidth: "none" }}
+            className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 -mx-1 px-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             role="tablist"
             aria-label="Filter by category"
           >
@@ -1537,7 +1537,7 @@ export default function DailyFeed() {
                         lineHeight: 1.7,
                         color: "rgba(245,238,220,0.55)",
                         marginBottom: "24px",
-                        maxWidth: "640px",
+                        maxWidth: "100%",
                       }}
                     >
                       {hero.summary}

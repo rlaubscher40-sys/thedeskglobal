@@ -109,7 +109,7 @@ export function PersonaSelector({ className = "" }: PersonaSelectorProps) {
   }, [persona]);
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-2 min-w-0 w-full ${className}`}>
       <span
         className="font-mono uppercase tracking-widest shrink-0 mr-2"
         style={{ fontSize: "8px", color: "rgba(245,238,220,0.28)" }}
@@ -120,7 +120,7 @@ export function PersonaSelector({ className = "" }: PersonaSelectorProps) {
       {/* Pill track -- relative container so the sliding pill is positioned inside it */}
       <div
         ref={containerRef}
-        className="relative flex items-center overflow-x-auto"
+        className="relative flex items-center overflow-x-auto min-w-0 flex-1"
         style={{
           background: "rgba(255,255,255,0.03)",
           border: "1px solid rgba(255,255,255,0.07)",

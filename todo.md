@@ -107,3 +107,12 @@
 - [x] AppLayout: bottom nav bar — ensure it doesn't overlap content on mobile
 - [x] AppLayout: sidebar overlay — ensure backdrop closes on tap
 - [x] General: ensure no horizontal scroll on any page at 390px width
+
+## Horizontal Overflow Fix (Mobile Today Tab)
+- [ ] Add overflow-x-hidden to the root page wrapper in DailyFeed
+- [ ] Fix PersonaSelector pill track overflowing viewport width
+- [ ] Fix IntelligenceSnapshot Key Metrics tiles overflowing on mobile
+- [ ] Fix feed card inner content (title, summary, action row) not clamping to container width
+- [ ] Fix hero masthead inner padding causing overflow at 390px
+- [ ] Fix category filter bar not clipping to viewport
+- [ ] Add overflow-x-hidden to AppLayout main content wrapper

@@ -108,7 +108,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative noise-overlay">
+    <div className="min-h-screen bg-background flex flex-col relative noise-overlay overflow-x-hidden">
       {/* Animated canvas background */}
       <AnimatedBackground />
       {/* Page transition burst canvas (z-index 100, above everything) */}
@@ -550,7 +550,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </AnimatePresence>
 
         {/* ─── Main Content ─────────────────────────────────────── */}
-        <main className="flex-1 overflow-y-auto relative">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
           {/* Mobile header */}
           <div
             className="lg:hidden sticky top-0 z-20 flex items-center gap-3 px-4 py-3"
@@ -594,7 +594,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           />
 
           {/* Page content */}
-          <div className="p-4 sm:p-7 lg:p-8 pb-28 lg:pb-8">{children}</div>
+          <div className="p-4 sm:p-7 lg:p-8 pb-28 lg:pb-8 overflow-x-hidden min-w-0">{children}</div>
         </main>
       </div>
 
